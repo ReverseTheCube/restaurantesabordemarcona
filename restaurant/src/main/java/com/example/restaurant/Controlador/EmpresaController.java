@@ -7,7 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.SortDefault;
+import org.springframework.data.domain.Sort;
 import java.util.List;
 import java.util.Optional;
 
@@ -70,29 +74,9 @@ public class EmpresaController {
      */
     @GetMapping("/api/listar")
     @ResponseBody
-    public ResponseEntity<?> listarEmpresas() {
-        try {
-            System.out.println("🔄 Cargando empresas activas...");
-            
-            List<Empresa> empresas = empresaRepository.findByActivoTrue();
-            
-            // Evitar lazy loading de pensiones
-            for (Empresa empresa : empresas) {
-                // Solo acceder a propiedades básicas, no a las colecciones
-                empresa.getRazonSocial();
-                empresa.getRuc();
-            }
-            
-            System.out.println("📊 Empresas activas encontradas: " + empresas.size());
-            
-            return ResponseEntity.ok(empresas);
-            
-        } catch (Exception e) {
-            System.err.println("❌ Error al cargar empresas: " + e.getMessage());
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error al cargar empresas: " + e.getMessage());
-        }
+    public ResponseEntity<Page<Empresa>> listarEmpresas(Pageable pageable) {
+        Page<Empresa> empresas = empresaRepository.findByActivoTrue(pageable);
+        return ResponseEntity.ok(empresas);
     }
     
     
@@ -144,9 +128,9 @@ public class EmpresaController {
     /**
      * ✅ ELIMINAR EMPRESA - CORREGIDO
      */
-    @PostMapping("/eliminar/{id}")
+    @DeleteMapping("/eliminar/{id}")
     @ResponseBody
-    public ResponseEntity<?> eliminarEmpresa(@PathVariable Integer id) {
+    public ResponseEntity<?> eliminarEmpresa(@PathVariable("id") Integer id) {
         try {
             System.out.println("🔄 Eliminando empresa con ID: " + id);
             

@@ -11,8 +11,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import com.example.restaurant.dto.PensionDTO;
-
+import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -38,30 +40,20 @@ public class PensionController {
      */
     @GetMapping("/api/listar")
     @ResponseBody
-    public ResponseEntity<?> listarPensiones() {
+    @Transactional(readOnly = true) // <-- Importante para acceder a datos lazy
+    public ResponseEntity<Page<PensionDTO>> listarPensiones(Pageable pageable) {
         try {
-            System.out.println("🔄 [PENSION] Iniciando carga de pensiones...");
-            
-            // Usar método con EAGER loading
-            List<Pension> pensiones = pensionRepository.findAllWithDetails();
-            
-            System.out.println("📊 [PENSION] Pensiones encontradas: " + pensiones.size());
-            
-            // Log de cada pensión para debugging
-            for (int i = 0; i < Math.min(pensiones.size(), 3); i++) {
-                Pension p = pensiones.get(i);
-                System.out.println("📝 [PENSION] Pensión " + (i+1) + ": ID=" + p.getIdPension() + 
-                                 ", Cliente=" + (p.getCliente() != null ? p.getCliente().getNombreCompleto() : "null") +
-                                 ", Empresa=" + (p.getEmpresa() != null ? p.getEmpresa().getRazonSocial() : "null"));
-            }
-            
-            return ResponseEntity.ok(pensiones);
-            
+            Page<Pension> pensionesEntidad = pensionRepository.findAll(pageable);
+
+            // Aquí está la magia: convertimos cada Pension a PensionDTO
+            Page<PensionDTO> pensionesDTO = pensionesEntidad.map(pension -> new PensionDTO(pension));
+
+            return ResponseEntity.ok(pensionesDTO);
+
         } catch (Exception e) {
-            System.err.println("❌ [PENSION] Error al cargar pensiones: " + e.getMessage());
+            System.err.println("❌ [PENSION] Error al cargar pensiones paginadas: " + e.getMessage());
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error al cargar pensiones: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
     
@@ -148,9 +140,9 @@ public class PensionController {
     /**
      * ✅ ELIMINAR PENSIÓN - SIMPLIFICADO
      */
-    @PostMapping("/eliminar/{id}")
+    @DeleteMapping("/eliminar/{id}")
     @ResponseBody
-    public ResponseEntity<?> eliminarPension(@PathVariable Integer id) {
+    public ResponseEntity<?> eliminarPension(@PathVariable("id") Integer id) {
         try {
             System.out.println("🔄 [PENSION] Eliminando pensión con ID: " + id);
             
@@ -266,5 +258,18 @@ public class PensionController {
         }
 
         return ResponseEntity.notFound().build();
+    }
+    @GetMapping("/api/por-empresa/{empresaId}")
+    @ResponseBody
+    public ResponseEntity<List<PensionDTO>> getPensionesPorEmpresa(@PathVariable("empresaId") Integer empresaId) {
+        List<PensionDTO> pensiones = pensionRepository.findPensionsByEmpresaId(empresaId);
+        return ResponseEntity.ok(pensiones);
+    }
+
+    @GetMapping("/api/por-cliente/{clienteId}")
+    @ResponseBody
+    public ResponseEntity<List<PensionDTO>> getPensionesPorCliente(@PathVariable("clienteId") Integer clienteId) {
+        List<PensionDTO> pensiones = pensionRepository.findPensionsByClienteId(clienteId);
+        return ResponseEntity.ok(pensiones);
     }
 }

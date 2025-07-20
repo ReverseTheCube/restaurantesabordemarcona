@@ -4,1384 +4,490 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Clientes y Pensiones - El Sabor de Marcona</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .header {
-            text-align: center;
-            color: white;
-            margin-bottom: 30px;
-        }
-
-        .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-        }
-
-        .btn-back {
-            background: #6c757d;
-            color: white;
-            padding: 8px 16px;
-            border: none;
-            border-radius: 8px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: transform 0.2s;
-            margin-bottom: 20px;
-            display: inline-flex;
-            align-items: center;
-        }
-
-        .btn-back:hover {
-            transform: translateY(-2px);
-            background: #5a6268;
-        }
-
-        /* Tabs */
-        .tabs {
-            display: flex;
-            background: white;
-            border-radius: 15px 15px 0 0;
-            overflow: hidden;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .tab {
-            flex: 1;
-            padding: 15px 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-weight: 600;
-            background: #f8f9fa;
-            color: #6c757d;
-        }
-
-        .tab.active {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-
-        .tab:hover:not(.active) {
-            background: #e9ecef;
-        }
-
-        /* Tab Content */
-        .tab-content {
-            background: white;
-            border-radius: 0 0 15px 15px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        /* Forms */
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group.full-width {
-            grid-column: 1 / -1;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #333;
-        }
-
-        input, select {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e1e1e1;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: border-color 0.3s;
-        }
-
-        input:focus, select:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        .btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: transform 0.2s;
-            margin-right: 10px;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-        }
-
-        .btn:disabled {
-            background: #6c757d;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .btn-secondary {
-            background: #6c757d;
-        }
-
-        .btn-danger {
-            background: #dc3545;
-        }
-
-        /* Campos dinámicos */
-        .dynamic-fields {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 8px;
-            margin-top: 15px;
-            display: none;
-        }
-
-        .dynamic-fields.show {
-            display: block;
-        }
-
-        .dynamic-fields h4 {
-            margin-bottom: 15px;
-            color: #495057;
-        }
-
-        /* Form containers */
-        .form-container {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 30px;
-        }
-
-        /* Alerts */
-        .alert {
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-        }
-
-        .alert-success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        .alert-error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-
-        /* Lista de clientes */
-        .clientes-lista {
-            margin-top: 30px;
-        }
-
-        .cliente-item {
-            background: #f8f9fa;
-            padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .cliente-info h4 {
-            margin-bottom: 5px;
-            color: #333;
-        }
-
-        .cliente-info p {
-            color: #666;
-            margin: 2px 0;
-        }
-
-        .cliente-actions button {
-            margin-left: 5px;
-            padding: 6px 12px;
-            font-size: 14px;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 20px;
-            color: #666;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .cliente-item {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .cliente-actions {
-                margin-top: 10px;
-            }
-
-            .tabs {
-                flex-direction: column;
-            }
-        }
-		/* Estilos para el Modal */
-		        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5); }
-		        .modal-content { background-color: #fefefe; margin: 10% auto; padding: 20px; border: 1px solid #888; width: 80%; max-width: 600px; border-radius: 15px; }
-		        .close-button { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
-		        .close-button:hover { color: black; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .header { text-align: center; color: white; margin-bottom: 30px; }
+        h1 { font-size: 2.5rem; margin-bottom: 10px; color: white;}
+        h2, h3, h4 { color: #343a40; }
+        h2 { border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 20px;}
+        .btn-back { background: #6c757d; color: white; padding: 8px 16px; border: none; border-radius: 8px; font-size: 14px; cursor: pointer; transition: transform 0.2s; margin-bottom: 20px; display: inline-flex; align-items: center; text-decoration: none;}
+        .btn-back:hover { transform: translateY(-2px); background: #5a6268; }
+        .tabs { display: flex; background: white; border-radius: 15px 15px 0 0; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .tab { flex: 1; padding: 15px 20px; text-align: center; cursor: pointer; transition: all 0.3s; font-weight: 600; background: #f8f9fa; color: #6c757d; }
+        .tab.active { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        .tab-content { background: white; border-radius: 0 0 15px 15px; padding: 30px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); display: none; }
+        .tab-content.active { display: block; }
+        .form-container { background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 30px; border: 1px solid #e9ecef;}
+        .list-section { margin-top: 40px; }
+        .cliente-item { background: #ffffff; padding: 15px; margin-bottom: 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #dee2e6; transition: all 0.2s ease-in-out;}
+        .cliente-item:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .cliente-info p { margin: 2px 0; color: #666; }
+        .loading { text-align: center; padding: 20px; color: #666; font-style: italic; }
+        .alert { padding: 15px; margin-bottom: 20px; border-radius: 8px; }
+        .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .alert-error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .btn { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 10px 20px; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; transition: transform 0.2s; margin-right: 10px; }
+        .btn-secondary { background: #6c757d; }
+        .btn-danger { background: #dc3545; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: #333; }
+        input, select { width: 100%; padding: 12px; border: 2px solid #e1e1e1; border-radius: 8px; font-size: 16px; }
+        .dynamic-fields { background: #f8f9fa; padding: 20px; border-radius: 8px; margin-top: 15px; display: none; }
+        .dynamic-fields.show { display: block; }
+        .pagination { margin-top: 25px; --bs-pagination-border-width: 0; --bs-pagination-border-radius: 8px; }
+        .pagination .page-link { color: #4a5568; background-color: #f1f5f9; font-weight: 600; border: none; margin: 0 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .pagination .page-item.active .page-link { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        .pagination .page-item.disabled .page-link { background-color: #f8f9fa; color: #adb5bd; }
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5); }
+        .modal-content { background-color: #fefefe; margin: 10% auto; padding: 20px; border: 1px solid #888; width: 80%; max-width: 600px; border-radius: 15px; }
+        .close-button { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
     <div class="container">
-        <button class="btn-back" onclick="window.location.href='main.html'">
-            ← Regresar al Panel
-        </button>
-        
-        <div class="header">
-            <h1>🍽️ Gestión de Clientes y Pensiones</h1>
-            <p>Sistema de Administración del Restaurante</p>
-        </div>
+        <a class="btn-back" href="main.html">← Regresar al Panel</a>
+        <div class="header"><h1>Gestión de Clientes y Pensiones</h1></div>
 
-        <!-- Pestañas -->
         <div class="tabs">
-            <div class="tab active" onclick="switchTab('clientes')">
-                👥 Gestión de Clientes
-            </div>
-            <div class="tab" onclick="switchTab('pensiones')">
-                🏛️ Gestión de Pensiones
-            </div>
+            <div class="tab active" onclick="switchTab('clientes', event)">👥 Gestión de Clientes</div>
+            <div class="tab" onclick="switchTab('pensiones', event)">🏛️ Gestión de Pensiones</div>
         </div>
-		<div id="editClienteModal" class="modal">
-		    <div class="modal-content">
-		        <span class="close-button" onclick="closeModal('editClienteModal')">&times;</span>
-		        <h2>Editar Cliente</h2>
-		        <form id="editClienteForm">
-		            <input type="hidden" id="editClienteId">
-		            <div id="editCamposParticular" class="dynamic-fields show">
-		                <div class="form-group">
-		                    <label for="editNombreParticular">Nombre Completo *</label>
-		                    <input type="text" id="editNombreParticular">
-		                </div>
-		            </div>
-		            <div id="editCamposPensionado" class="dynamic-fields">
-		                <div class="form-group"><label for="editDniPensionado">DNI *</label><input type="text" id="editDniPensionado" maxlength="8"></div>
-		                <div class="form-group"><label for="editNombresPensionado">Nombres *</label><input type="text" id="editNombresPensionado"></div>
-		                <div class="form-group"><label for="editApellidosPensionado">Apellidos *</label><input type="text" id="editApellidosPensionado"></div>
-		            </div>
-		            <button type="button" class="btn" id="btnGuardarCliente">Guardar Cambios</button>
-		        </form>
-		    </div>
-		</div>
 
-		<div id="editEmpresaModal" class="modal">
-		    <div class="modal-content">
-		        <span class="close-button" onclick="closeModal('editEmpresaModal')">&times;</span>
-		        <h2>Editar Empresa</h2>
-		        <form id="editEmpresaForm">
-		            <input type="hidden" id="editEmpresaId">
-		            <div class="form-group"><label>RUC (No editable)</label><input type="text" id="editRucEmpresa" disabled></div>
-		            <div class="form-group"><label for="editRazonSocial">Razón Social *</label><input type="text" id="editRazonSocial" required></div>
-		            <button type="button" class="btn" id="btnGuardarEmpresa">Guardar Cambios</button>
-		        </form>
-		    </div>
-		</div>
-
-		<div id="editPensionModal" class="modal">
-		    <div class="modal-content">
-		        <span class="close-button" onclick="closeModal('editPensionModal')">&times;</span>
-		        <h2>Editar Pensión</h2>
-		        <form id="editPensionForm">
-		            <input type="hidden" id="editPensionId">
-		            <div class="form-group"><label>Cliente (No editable)</label><input type="text" id="editPensionCliente" disabled></div>
-		            <div class="form-group"><label>Empresa (No editable)</label><input type="text" id="editPensionEmpresa" disabled></div>
-		            <div class="form-group"><label for="editMontoMensual">Monto Mensual (S/) *</label><input type="number" id="editMontoMensual" step="0.01" min="0" required></div>
-		            <div class="form-group"><label for="editFechaInicio">Fecha de Inicio *</label><input type="date" id="editFechaInicio" required></div>
-		            <div class="form-group"><label for="editFechaFin">Fecha de Fin *</label><input type="date" id="editFechaFin" required></div>
-		            <button type="button" class="btn" id="btnGuardarPension">Guardar Cambios</button>
-		        </form>
-		    </div>
-		</div>
-
-        <!-- PESTAÑA 1: GESTIÓN DE CLIENTES -->
         <div id="tab-clientes" class="tab-content active">
-            <h2>Registro de Cliente</h2>
-            <div id="alertContainer1"></div>
-            
-            <form id="clienteForm">
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="tipoCliente">Tipo de Cliente *</label>
-                        <select id="tipoCliente" name="tipoCliente" required onchange="toggleClienteFields()">
-                            <option value="">Seleccione el tipo...</option>
-                            <option value="PARTICULAR">Particular</option>
-                            <option value="PENSION">Pensionado</option>
-                        </select>
-                    </div>
-                </div>
-
-                <!-- Campos para PARTICULAR -->
-                <div id="camposParticular" class="dynamic-fields">
-                    <h4>📝 Datos de Cliente Particular</h4>
-                    <div class="form-group">
-                        <label for="nombreParticular">Nombre Completo *</label>
-                        <input type="text" id="nombreParticular" placeholder="Ingrese el nombre completo">
-                    </div>
-                </div>
-
-                <!-- Campos para PENSIONADO -->
-                <div id="camposPensionado" class="dynamic-fields">
-                    <h4>👤 Datos de Pensionado</h4>
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label for="dniPensionado">DNI *</label>
-                            <input type="text" id="dniPensionado" placeholder="12345678" maxlength="8" pattern="[0-9]{8}">
-                        </div>
-                        <div class="form-group">
-                            <label for="nombresPensionado">Nombres *</label>
-                            <input type="text" id="nombresPensionado" placeholder="Juan Carlos">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="apellidosPensionado">Apellidos *</label>
-                        <input type="text" id="apellidosPensionado" placeholder="García López">
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <button type="button" class="btn" onclick="registrarCliente()">
-                        Registrar Cliente
-                    </button>
-                    <button type="button" class="btn btn-secondary" onclick="limpiarFormularioCliente()">
-                        Limpiar
-                    </button>
-                </div>
-            </form>
-
-            <!-- Lista de Clientes -->
-            <div class="clientes-lista">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <h2>Lista de Clientes</h2>
-                    <button class="btn btn-secondary" onclick="cargarClientes()">
-                        🔄 Actualizar
-                    </button>
-                </div>
-                
-                <div class="form-group" style="max-width: 400px;">
-                    <label for="buscarNombre">Buscar Cliente</label>
-                    <input type="text" id="buscarNombre" placeholder="Ingrese nombre o DNI..."
-                           oninput="buscarClientes()">
-                </div>
-                
-                <div id="clientesLista">
-                    <div class="loading">Cargando clientes...</div>
-                </div>
+            <div class="form-container">
+                <h2>Registro de Cliente</h2><div id="alertContainer1"></div>
+                <form id="clienteForm">
+                    <div class="form-group"><label for="tipoCliente">Tipo de Cliente *</label><select id="tipoCliente" onchange="toggleClienteFields()"><option value="">Seleccione...</option><option value="PARTICULAR">Particular</option><option value="PENSION">Pensionado</option></select></div>
+                    <div id="camposParticular" class="dynamic-fields"><div class="form-group"><label for="nombreParticular">Nombre Completo *</label><input type="text" id="nombreParticular" placeholder="Ingrese el nombre completo"></div></div>
+                    <div id="camposPensionado" class="dynamic-fields"><div class="form-grid"><div class="form-group"><label for="dniPensionado">DNI *</label><input type="text" id="dniPensionado" placeholder="12345678" maxlength="8"></div><div class="form-group"><label for="nombresPensionado">Nombres *</label><input type="text" id="nombresPensionado" placeholder="Juan Carlos"></div></div><div class="form-group"><label for="apellidosPensionado">Apellidos *</label><input type="text" id="apellidosPensionado" placeholder="García López"></div></div>
+                    <button type="button" class="btn" onclick="registrarCliente()">Registrar</button><button type="button" class="btn btn-secondary" onclick="limpiarFormularioCliente()">Limpiar</button>
+                </form>
+            </div>
+            <div class="list-section">
+                <h2>Lista de Clientes</h2><div id="clientesLista"><div class="loading">Cargando...</div></div>
+                <nav><ul class="pagination justify-content-center" id="paginacionClientes"></ul></nav>
             </div>
         </div>
 
-        <!-- PESTAÑA 2: GESTIÓN DE PENSIONES -->
         <div id="tab-pensiones" class="tab-content">
-            <h2>Gestión de Empresas y Pensiones</h2>
-            <div id="alertContainer2"></div>
-            
-            <!-- SECCIÓN 1: REGISTRO DE EMPRESAS -->
             <div class="form-container">
-                <h3>🏢 Registro de Empresa</h3>
+                <h3>🏢 Registro de Empresa</h3><div id="alertContainer2"></div>
                 <form id="empresaForm">
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label for="rucEmpresa">RUC *</label>
-                            <input type="text" id="rucEmpresa" placeholder="20123456789" maxlength="11" pattern="[0-9]{11}" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="razonSocial">Razón Social *</label>
-                            <input type="text" id="razonSocial" placeholder="EMPRESA SAC" required>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <button type="button" class="btn" onclick="registrarEmpresa()">
-                            Registrar Empresa
-                        </button>
-                        <button type="button" class="btn btn-secondary" onclick="limpiarFormularioEmpresa()">
-                            Limpiar
-                        </button>
-                    </div>
+                    <div class="form-grid"><div class="form-group"><label for="rucEmpresa">RUC *</label><input type="text" id="rucEmpresa" placeholder="20123456789" maxlength="11"></div><div class="form-group"><label for="razonSocial">Razón Social *</label><input type="text" id="razonSocial" placeholder="EMPRESA SAC"></div></div>
+                    <button type="button" class="btn" onclick="registrarEmpresa()">Registrar</button><button type="button" class="btn btn-secondary" onclick="limpiarFormularioEmpresa()">Limpiar</button>
                 </form>
-
-                <!-- Lista de Empresas -->
-                <div style="margin-top: 20px;">
-                    <h4>Empresas Registradas</h4>
-                    <div id="empresasLista">
-                        <div class="loading">Cargando empresas...</div>
-                    </div>
-                </div>
             </div>
-
-            <!-- SECCIÓN 2: REGISTRO DE PENSIONES -->
+            <div class="list-section">
+                <h4>Empresas Registradas</h4><div id="empresasLista"><div class="loading">Cargando...</div></div>
+                <nav><ul class="pagination justify-content-center" id="paginacionEmpresas"></ul></nav>
+            </div>
             <div class="form-container" style="background: #e8f4fd;">
                 <h3>💼 Registro de Pensión</h3>
                 <form id="pensionForm">
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label for="empresaPension">Empresa *</label>
-                            <select id="empresaPension" required>
-                                <option value="">Seleccione una empresa...</option>
-                                <!-- Se llenarán dinámicamente -->
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="clientePension">Cliente Pensionado *</label>
-                            <select id="clientePension" required>
-                                <option value="">Seleccione un cliente pensionado...</option>
-                                <!-- Se llenarán dinámicamente -->
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label for="montoMensual">Monto Mensual (S/) *</label>
-                            <input type="number" id="montoMensual" step="0.01" min="0" placeholder="150.00" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="fechaInicio">Fecha de Inicio *</label>
-                            <input type="date" id="fechaInicio" required>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="fechaFin">Fecha de Fin *</label>
-                        <input type="date" id="fechaFin" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <button type="button" class="btn" onclick="registrarPension()" id="btnRegistrarPension">
-                            Registrar Pensión
-                        </button>
-                        <button type="button" class="btn btn-secondary" onclick="limpiarFormularioPension()">
-                            Limpiar
-                        </button>
-                    </div>
+                    <div class="form-grid"><div class="form-group"><label for="empresaPension">Empresa *</label><select id="empresaPension"></select></div><div class="form-group"><label for="clientePension">Cliente Pensionado *</label><select id="clientePension"></select></div></div>
+                    <div class="form-grid"><div class="form-group"><label for="montoMensual">Monto Mensual (S/) *</label><input type="number" id="montoMensual" step="0.01" min="0" placeholder="150.00"></div><div class="form-group"><label for="fechaInicio">Fecha de Inicio *</label><input type="date" id="fechaInicio"></div></div>
+                    <div class="form-group"><label for="fechaFin">Fecha de Fin *</label><input type="date" id="fechaFin"></div>
+                    <button type="button" class="btn" id="btnRegistrarPension" onclick="registrarPension()">Registrar</button><button type="button" class="btn btn-secondary" onclick="limpiarFormularioPension()">Limpiar</button>
                 </form>
             </div>
-
-            <!-- Lista de Pensiones -->
-            <div class="clientes-lista">
-                <h2>Pensiones Registradas</h2>
-                <div id="pensionesList">
-                    <div class="loading">Cargando pensiones...</div>
-                </div>
+            <div class="list-section">
+                <h2>Pensiones Registradas</h2><div id="pensionesList"><div class="loading">Cargando...</div></div>
+                <nav><ul class="pagination justify-content-center" id="paginacionPensiones"></ul></nav>
             </div>
         </div>
     </div>
+	<div class="container">
+	        </div>
 
-    <script>
-		// Variables globales
-		let clientesData = [];
-		let timeoutBusqueda = null;
-		let registrandoPension = false; // Para evitar doble envío
+	    <div id="pensionesAsociadasModal" class="modal">
+	        <div class="modal-content">
+	            <span class="close-button" onclick="closeModal('pensionesAsociadasModal')">&times;</span>
+	            <h2 id="modalPensionesTitulo">Pensiones Asociadas</h2>
+	            <div id="modalPensionesContenido">
+	                </div>
+	        </div>
+	    </div>
+    
+    <div id="editClienteModal" class="modal"><div class="modal-content"><span class="close-button" onclick="closeModal('editClienteModal')">&times;</span><h2>Editar Cliente</h2><form id="editClienteForm"><input type="hidden" id="editClienteId"><div id="editCamposParticular" class="dynamic-fields"><div class="form-group"><label for="editNombreParticular">Nombre Completo *</label><input type="text" id="editNombreParticular"></div></div><div id="editCamposPensionado" class="dynamic-fields"><div class="form-group"><label for="editDniPensionado">DNI *</label><input type="text" id="editDniPensionado" maxlength="8"></div><div class="form-group"><label for="editNombresPensionado">Nombres *</label><input type="text" id="editNombresPensionado"></div><div class="form-group"><label for="editApellidosPensionado">Apellidos *</label><input type="text" id="editApellidosPensionado"></div></div><button type="button" class="btn" id="btnGuardarCliente">Guardar Cambios</button></form></div></div>
+    <div id="editEmpresaModal" class="modal"><div class="modal-content"><span class="close-button" onclick="closeModal('editEmpresaModal')">&times;</span><h2>Editar Empresa</h2><form id="editEmpresaForm"><input type="hidden" id="editEmpresaId"><div class="form-group"><label>RUC (No editable)</label><input type="text" id="editRucEmpresa" disabled></div><div class="form-group"><label for="editRazonSocial">Razón Social *</label><input type="text" id="editRazonSocial" required></div><button type="button" class="btn" id="btnGuardarEmpresa">Guardar Cambios</button></form></div></div>
+    <div id="editPensionModal" class="modal"><div class="modal-content"><span class="close-button" onclick="closeModal('editPensionModal')">&times;</span><h2>Editar Pensión</h2><form id="editPensionForm"><input type="hidden" id="editPensionId"><div class="form-group"><label>Cliente</label><input type="text" id="editPensionCliente" disabled></div><div class="form-group"><label>Empresa</label><input type="text" id="editPensionEmpresa" disabled></div><div class="form-group"><label for="editMontoMensual">Monto (S/)</label><input type="number" id="editMontoMensual" step="0.01" min="0" required></div><div class="form-group"><label for="editFechaInicio">Inicio</label><input type="date" id="editFechaInicio" required></div><div class="form-group"><label for="editFechaFin">Fin</label><input type="date" id="editFechaFin" required></div><button type="button" class="btn" id="btnGuardarPension">Guardar Cambios</button></form></div></div>
 
-		// Inicializar página
-		document.addEventListener('DOMContentLoaded', function() {
-		    cargarClientes();
-		    cargarClientesPensionados();
-		    cargarEmpresas();
-		    cargarPensiones(); // ✅ AGREGADO: Cargar pensiones al inicio
-			// Asignar eventos a los botones de guardado de los modales
-			        document.getElementById('btnGuardarCliente').addEventListener('click', guardarCambiosCliente);
-			        document.getElementById('btnGuardarEmpresa').addEventListener('click', guardarCambiosEmpresa);
-			        document.getElementById('btnGuardarPension').addEventListener('click', guardarCambiosPension);
-		});
+	<script>
+	    let clientesData = [];
+	    let registrandoPension = false;
 
-		// ✅ CARGAR PENSIONES AL CAMBIAR A LA PESTAÑA
-		function switchTab(tabName) {
-		    // Código existente...
-		    document.querySelectorAll('.tab-content').forEach(tab => {
-		        tab.classList.remove('active');
-		    });
-		    document.querySelectorAll('.tab').forEach(tab => {
-		        tab.classList.remove('active');
-		    });
+	    document.addEventListener('DOMContentLoaded', () => {
+	        cargarClientes();
+	        document.getElementById('btnGuardarCliente').addEventListener('click', guardarCambiosCliente);
+	        document.getElementById('btnGuardarEmpresa').addEventListener('click', guardarCambiosEmpresa);
+	        document.getElementById('btnGuardarPension').addEventListener('click', guardarCambiosPension);
+	    });
 
-		    document.getElementById(`tab-${tabName}`).classList.add('active');
-		    event.target.classList.add('active');
-		    
-		    // ✅ MEJORADO: Cargar datos específicos con logs
-		    if (tabName === 'pensiones') {
-		        console.log('🔄 Cambiando a pestaña de pensiones...');
-		        cargarEmpresas();
-		        cargarClientesPensionados();
-		        cargarPensiones(); // ← Esta es la función corregida
-		    }
-		}
+	    function switchTab(tabName, event) {
+	        document.querySelectorAll('.tab-content, .tab').forEach(el => el.classList.remove('active'));
+	        document.getElementById(`tab-${tabName}`).classList.add('active');
+	        event.currentTarget.classList.add('active');
+	        if (tabName === 'pensiones') {
+	            cargarEmpresas();
+	            cargarPensiones();
+	            cargarClientesPensionados();
+	            cargarEmpresasParaDropdown();
+	        }
+	    }
 
-		// Mostrar/ocultar campos según tipo de cliente
-		function toggleClienteFields() {
-		    const tipo = document.getElementById('tipoCliente').value;
-		    
-		    // Ocultar todos los campos dinámicos
-		    document.querySelectorAll('.dynamic-fields').forEach(field => {
-		        field.classList.remove('show');
-		    });
+	    const API_CONFIG = {
+	        clientes: { endpoint: '/clientes/api/buscar/todos', listContainer: 'clientesLista', paginationContainer: 'paginacionClientes', renderFunction: mostrarClientes, loadFunction: 'cargarClientes', sort: 'idCliente,desc' },
+	        empresas: { endpoint: '/empresas/api/listar', listContainer: 'empresasLista', paginationContainer: 'paginacionEmpresas', renderFunction: mostrarEmpresas, loadFunction: 'cargarEmpresas', sort: 'idEmpresa,desc' },
+	        pensiones: { endpoint: '/pensiones/api/listar', listContainer: 'pensionesList', paginationContainer: 'paginacionPensiones', renderFunction: mostrarPensiones, loadFunction: 'cargarPensiones', sort: 'idPension,desc' }
+	    };
 
-		    // Mostrar campos según el tipo
-		    if (tipo === 'PARTICULAR') {
-		        document.getElementById('camposParticular').classList.add('show');
-		    } else if (tipo === 'PENSION') {
-		        document.getElementById('camposPensionado').classList.add('show');
-		    }
-		}
+	    async function loadPaginatedData(type, page = 0, size = 5) {
+	        const config = API_CONFIG[type];
+	        const container = document.getElementById(config.listContainer);
+	        container.innerHTML = `<div class="loading">Cargando...</div>`;
+	        try {
+	            const response = await fetch(`${config.endpoint}?page=${page}&size=${size}&sort=${config.sort}`);
+	            if (!response.ok) throw new Error(`Error al cargar ${type}`);
+	            const pageData = await response.json();
+	            if (type === 'clientes') clientesData = pageData.content;
+	            config.renderFunction(pageData.content);
+	            renderizarPaginacion(config.paginationContainer, pageData, config.loadFunction);
+	        } catch (error) {
+	            container.innerHTML = `<p class="text-center text-danger p-3">${error.message}</p>`;
+	        }
+	    }
 
-		// Registrar cliente
-		async function registrarCliente() {
-		    const tipo = document.getElementById('tipoCliente').value;
-		    
-		    if (!tipo) {
-		        mostrarAlerta('Seleccione un tipo de cliente', 'error', 1);
-		        return;
-		    }
+	    function cargarClientes(page = 0, size = 5) { loadPaginatedData('clientes', page, size); }
+	    function cargarEmpresas(page = 0, size = 3) { loadPaginatedData('empresas', page, size); }
+	    function cargarPensiones(page = 0, size = 4) { loadPaginatedData('pensiones', page, size); }
 
-		    let clienteData = {
-		        tipoCliente: tipo
-		    };
-
-		    // Validar y construir datos según el tipo
-		    if (tipo === 'PARTICULAR') {
-		        const nombre = document.getElementById('nombreParticular').value.trim();
-		        if (!nombre || nombre.length < 3) {
-		            mostrarAlerta('El nombre debe tener al menos 3 caracteres', 'error', 1);
-		            return;
-		        }
-		        clienteData.nombreCliente = nombre;
-		        
-		    } else if (tipo === 'PENSION') {
-		        const dni = document.getElementById('dniPensionado').value.trim();
-		        const nombres = document.getElementById('nombresPensionado').value.trim();
-		        const apellidos = document.getElementById('apellidosPensionado').value.trim();
-		        
-		        if (!dni || dni.length !== 8 || !/^\d{8}$/.test(dni)) {
-		            mostrarAlerta('DNI debe tener exactamente 8 dígitos', 'error', 1);
-		            return;
-		        }
-		        
-		        if (!nombres || nombres.length < 2) {
-		            mostrarAlerta('Los nombres son obligatorios', 'error', 1);
-		            return;
-		        }
-		        
-		        if (!apellidos || apellidos.length < 2) {
-		            mostrarAlerta('Los apellidos son obligatorios', 'error', 1);
-		            return;
-		        }
-		        
-		        clienteData.dni = dni;
-		        clienteData.nombres = nombres;
-		        clienteData.apellidos = apellidos;
-		    }
-
-		    try {
-		        const response = await fetch('/clientes/guardar', {
-		            method: 'POST',
-		            headers: {
-		                'Content-Type': 'application/json',
-		                'Accept': 'application/json'
-		            },
-		            body: JSON.stringify(clienteData)
-		        });
-
-		        if (response.ok) {
-		            mostrarAlerta('Cliente registrado exitosamente!', 'success', 1);
-		            limpiarFormularioCliente();
-		            cargarClientes();
-		            cargarClientesPensionados(); // Actualizar lista de pensionados
-		        } else {
-		            const errorText = await response.text();
-		            mostrarAlerta('Error al registrar: ' + errorText, 'error', 1);
-		        }
-		    } catch (error) {
-		        console.error('Error:', error);
-		        mostrarAlerta('Error de conexión al registrar cliente', 'error', 1);
-		    }
-		}
-
-		// Cargar lista de clientes
-		async function cargarClientes() {
-		    try {
-		        const response = await fetch('/clientes/api/buscar/todos');
-		        if (!response.ok) throw new Error('Error al cargar clientes');
-		        
-		        clientesData = await response.json();
-		        mostrarClientes(clientesData);
-		        
-		    } catch (error) {
-		        console.error('Error:', error);
-		        mostrarAlerta('Error al cargar clientes', 'error', 1);
-		        document.getElementById('clientesLista').innerHTML = 
-		            '<p style="text-align: center; color: #666; padding: 20px;">Error al cargar los clientes</p>';
-		    }
-		}
-
-		// Mostrar clientes en la lista
 		function mostrarClientes(clientes) {
-		    const container = document.getElementById('clientesLista');
-		    
-		    if (!clientes || clientes.length === 0) {
-		        container.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">No hay clientes registrados</p>';
-		        return;
-		    }
-		    
-		    container.innerHTML = clientes.map(cliente => {
-		        let nombreMostrar = '';
-		        let infoExtra = '';
-		        
-		        if (cliente.tipoCliente === 'PENSION') {
-		            nombreMostrar = `${cliente.nombres || ''} ${cliente.apellidos || ''}`.trim();
-		            infoExtra = `<p><strong>DNI:</strong> ${cliente.dni || 'N/A'}</p>`;
-		        } else {
-		            nombreMostrar = cliente.nombreCliente || 'Sin nombre';
-		        }
-		        
-		        return `
-		            <div class="cliente-item">
-		                <div class="cliente-info">
-		                    <h4>${nombreMostrar}</h4>
-		                    <p><strong>ID:</strong> ${cliente.idCliente}</p>
-		                    <p><strong>Tipo:</strong> ${formatearTipoCliente(cliente.tipoCliente)}</p>
-		                    ${infoExtra}
-		                </div>
-		                <div class="cliente-actions">
-		                    <button class="btn btn-secondary" onclick="editarCliente(${cliente.idCliente})">
-		                        ✏️ Editar
-		                    </button>
-		                    <button class="btn btn-danger" onclick="eliminarCliente(${cliente.idCliente}, '${nombreMostrar.replace(/'/g, "\\'")}')">
-		                        🗑️ Eliminar
-		                    </button>
-		                </div>
-		            </div>
-		        `;
-		    }).join('');
+		            const container = document.getElementById('clientesLista');
+		            if (!clientes || clientes.length === 0) { container.innerHTML = '<p class="text-center p-3">No hay clientes para mostrar.</p>'; return; }
+		            container.innerHTML = clientes.map(c => {
+		                const nombre = c.tipoCliente === 'PENSION' ? `${c.nombres || ''} ${c.apellidos || ''}`.trim() : c.nombreCliente;
+		                // ✅ Botón "Ver Pensiones" añadido para clientes PENSION
+		                const botonVerPensiones = c.tipoCliente === 'PENSION' 
+		                    ? `<button class="btn btn-info btn-sm" onclick="verPensionesDeCliente(${c.idCliente}, '${nombre}')">Ver Pensiones</button>` 
+		                    : '';
+		                return `<div class="cliente-item">
+		                            <div class="cliente-info"><h4>${nombre}</h4><p><strong>ID:</strong> ${c.idCliente} | <strong>Tipo:</strong> ${c.tipoCliente}</p></div>
+		                            <div>${botonVerPensiones}<button class="btn btn-secondary btn-sm" onclick="editarCliente(${c.idCliente})">Editar</button><button class="btn btn-danger btn-sm" onclick="eliminarCliente(${c.idCliente}, '${nombre.replace(/'/g, "\\'")}')">Eliminar</button></div>
+		                        </div>`;
+		            }).join('');
 		}
-
-		// Cargar clientes pensionados para el select
-		async function cargarClientesPensionados() {
-		    try {
-		        const response = await fetch('/clientes/api/tipo/PENSION');
-		        if (!response.ok) return;
-		        
-		        const clientes = await response.json();
-		        const select = document.getElementById('clientePension');
-		        
-		        select.innerHTML = '<option value="">Seleccione un cliente pensionado...</option>';
-		        
-		        clientes.forEach(cliente => {
-		            const nombre = cliente.nombres && cliente.apellidos 
-		                ? `${cliente.nombres} ${cliente.apellidos}` 
-		                : cliente.nombreCliente;
-		            select.innerHTML += `<option value="${cliente.idCliente}">${nombre} (DNI: ${cliente.dni})</option>`;
-		        });
-		        
-		    } catch (error) {
-		        console.error('Error al cargar pensionados:', error);
-		    }
-		}
-
-		// Registrar empresa
-		async function registrarEmpresa() {
-		    const ruc = document.getElementById('rucEmpresa').value.trim();
-		    const razonSocial = document.getElementById('razonSocial').value.trim();
-
-		    if (!ruc || ruc.length !== 11 || !/^\d{11}$/.test(ruc)) {
-		        mostrarAlerta('RUC debe tener exactamente 11 dígitos', 'error', 2);
-		        return;
-		    }
-
-		    if (!razonSocial || razonSocial.length < 3) {
-		        mostrarAlerta('La razón social debe tener al menos 3 caracteres', 'error', 2);
-		        return;
-		    }
-
-		    const empresaData = {
-		        ruc: ruc,
-		        razonSocial: razonSocial
-		    };
-
-		    try {
-		        const response = await fetch('/empresas/guardar', {
-		            method: 'POST',
-		            headers: {
-		                'Content-Type': 'application/json',
-		                'Accept': 'application/json'
-		            },
-		            body: JSON.stringify(empresaData)
-		        });
-
-		        if (response.ok) {
-		            mostrarAlerta('Empresa registrada exitosamente!', 'success', 2);
-		            limpiarFormularioEmpresa();
-		            cargarEmpresas();
-		        } else {
-		            const errorText = await response.text();
-		            mostrarAlerta('Error al registrar empresa: ' + errorText, 'error', 2);
-		        }
-		    } catch (error) {
-		        console.error('Error:', error);
-		        mostrarAlerta('Error de conexión al registrar empresa', 'error', 2);
-		    }
-		}
-
-		// Cargar empresas para los selects y lista
-		async function cargarEmpresas() {
-		    try {
-		        const response = await fetch('/empresas/api/listar');
-		        if (!response.ok) return;
-		        
-		        const empresas = await response.json();
-		        
-		        // Llenar select de empresas
-		        const selectEmpresa = document.getElementById('empresaPension');
-		        selectEmpresa.innerHTML = '<option value="">Seleccione una empresa...</option>';
-		        
-		        empresas.forEach(empresa => {
-		            selectEmpresa.innerHTML += `<option value="${empresa.idEmpresa}">${empresa.razonSocial} (RUC: ${empresa.ruc})</option>`;
-		        });
-
-		        // Mostrar lista de empresas
-		        mostrarEmpresas(empresas);
-		        
-		    } catch (error) {
-		        console.error('Error al cargar empresas:', error);
-		    }
-		}
-
-		// Mostrar empresas en la lista
 		function mostrarEmpresas(empresas) {
-		    const container = document.getElementById('empresasLista');
-		    
-		    if (!empresas || empresas.length === 0) {
-		        container.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">No hay empresas registradas</p>';
-		        return;
-		    }
-		    
-		    container.innerHTML = empresas.map(empresa => `
-		        <div class="cliente-item">
-		            <div class="cliente-info">
-		                <h4>${empresa.razonSocial}</h4>
-		                <p><strong>RUC:</strong> ${empresa.ruc}</p>
-		                <p><strong>Estado:</strong> ${empresa.activo ? 'Activa' : 'Inactiva'}</p>
-		            </div>
-		            <div class="cliente-actions">
-		                <button class="btn btn-secondary" onclick="editarEmpresa(${empresa.idEmpresa})">
-		                    ✏️ Editar
-		                </button>
-		                <button class="btn btn-danger" onclick="eliminarEmpresa(${empresa.idEmpresa}, '${empresa.razonSocial}')">
-		                    🗑️ Eliminar
-		                </button>
-		            </div>
-		        </div>
-		    `).join('');
+		            const container = document.getElementById('empresasLista');
+		            if (!empresas || empresas.length === 0) { container.innerHTML = '<p class="text-center p-3">No hay empresas para mostrar.</p>'; return; }
+		            container.innerHTML = empresas.map(e => {
+		                // ✅ Botón "Ver Pensiones" añadido
+		                return `<div class="cliente-item">
+		                            <div class="cliente-info"><h4>${e.razonSocial}</h4><p><strong>RUC:</strong> ${e.ruc}</p></div>
+		                            <div><button class="btn btn-info btn-sm" onclick="verPensionesDeEmpresa(${e.idEmpresa}, '${e.razonSocial.replace(/'/g, "\\'")}')">Ver Pensiones</button><button class="btn btn-secondary btn-sm" onclick="editarEmpresa(${e.idEmpresa})">Editar</button><button class="btn btn-danger btn-sm" onclick="eliminarEmpresa(${e.idEmpresa}, '${e.razonSocial.replace(/'/g, "\\'")}')">Eliminar</button></div>
+		                        </div>`;
+		            }).join('');
 		}
-
-		// Buscar clientes
-		function buscarClientes() {
-		    clearTimeout(timeoutBusqueda);
-		    const termino = document.getElementById('buscarNombre').value.trim();
-		    
-		    if (termino === '') {
-		        mostrarClientes(clientesData);
-		        return;
-		    }
-		    
-		    timeoutBusqueda = setTimeout(() => {
-		        const clientesFiltrados = clientesData.filter(cliente => {
-		            const nombre = (cliente.nombreCompleto || cliente.nombreCliente || '').toLowerCase();
-		            const dni = (cliente.dni || '').toLowerCase();
-		            const terminoLower = termino.toLowerCase();
+	    function mostrarPensiones(pensiones) {
+	        const container = document.getElementById('pensionesList');
+	        if (!pensiones || pensiones.length === 0) { container.innerHTML = '<p class="text-center p-3">No hay pensiones para mostrar.</p>'; return; }
+	        container.innerHTML = pensiones.map(p => {
+	            const clienteNombre = p.clienteNombre || 'N/A';
+	            const empresaNombre = p.empresaRazonSocial || 'N/A';
+	            return `<div class="cliente-item"><div class="cliente-info"><h4>Pensión de ${clienteNombre}</h4><p><strong>Empresa:</strong> ${empresaNombre}</p></div><div><button class="btn btn-secondary btn-sm" onclick="editarPension(${p.idPension})">Editar</button><button class="btn btn-danger btn-sm" onclick="eliminarPension(${p.idPension}, '${clienteNombre.replace(/'/g, "\\'")}')">Eliminar</button></div></div>`;
+	        }).join('');
+	    }
+		async function verPensionesDeEmpresa(empresaId, nombreEmpresa) {
+		            const modalTitulo = document.getElementById('modalPensionesTitulo');
+		            const modalContenido = document.getElementById('modalPensionesContenido');
+		            modalTitulo.textContent = `Pensiones de: ${nombreEmpresa}`;
+		            modalContenido.innerHTML = `<div class="loading">Cargando pensiones...</div>`;
+		            openModal('pensionesAsociadasModal');
 		            
-		            return nombre.includes(terminoLower) || dni.includes(terminoLower);
-		        });
-		        
-		        mostrarClientes(clientesFiltrados);
-		    }, 300);
-		}
-
-		// ✅ REEMPLAZA LA FUNCIÓN registrarPension() en gestion-clientes.html
-
-		async function registrarPension() {
-		    console.log('🔄 Iniciando registro de pensión...');
-		    
-		    // Evitar doble click
-		    if (registrandoPension) {
-		        console.log('⚠️ Ya se está registrando una pensión, evitando doble envío');
-		        return;
-		    }
-		    
-		    registrandoPension = true;
-		    const btnRegistrar = document.getElementById('btnRegistrarPension');
-		    
-		    try {
-		        // Deshabilitar botón mientras registra
-		        if (btnRegistrar) {
-		            btnRegistrar.disabled = true;
-		            btnRegistrar.textContent = 'Registrando...';
-		        }
-		        
-		        const empresaId = document.getElementById('empresaPension').value;
-		        const clienteId = document.getElementById('clientePension').value;
-		        const monto = document.getElementById('montoMensual').value;
-		        const fechaInicio = document.getElementById('fechaInicio').value;
-		        const fechaFin = document.getElementById('fechaFin').value;
-
-		        console.log('📊 Datos del formulario:', {
-		            empresaId, clienteId, monto, fechaInicio, fechaFin
-		        });
-
-		        // Validaciones básicas
-		        if (!empresaId || !clienteId || !monto || !fechaInicio || !fechaFin) {
-		            mostrarAlerta('Todos los campos son obligatorios', 'error', 2);
-		            return;
-		        }
-
-		        if (new Date(fechaFin) <= new Date(fechaInicio)) {
-		            mostrarAlerta('La fecha de fin debe ser posterior a la fecha de inicio', 'error', 2);
-		            return;
-		        }
-
-		        if (parseFloat(monto) <= 0) {
-		            mostrarAlerta('El monto mensual debe ser mayor a 0', 'error', 2);
-		            return;
-		        }
-
-		        const pensionData = {
-		            empresaId: parseInt(empresaId),
-		            clienteId: parseInt(clienteId),
-		            montoMensual: parseFloat(monto),
-		            fechaInicio: fechaInicio,
-		            fechaFin: fechaFin
-		        };
-
-		        console.log('📤 Enviando datos al servidor:', pensionData);
-
-		        const response = await fetch('/pensiones/guardar', {
-		            method: 'POST',
-		            headers: {
-		                'Content-Type': 'application/json',
-		                'Accept': 'application/json'
-		            },
-		            body: JSON.stringify(pensionData)
-		        });
-
-		        console.log('📡 Response status:', response.status);
-
-		        if (response.ok) {
-		            const responseText = await response.text();
-		            console.log('✅ Respuesta del servidor:', responseText);
-		            
-		            mostrarAlerta('✅ Pensión registrada exitosamente!', 'success', 2);
-		            limpiarFormularioPension();
-		            
-		            // ✅ IMPORTANTE: Recargar pensiones después de registrar
-		            console.log('🔄 Recargando lista de pensiones...');
-		            setTimeout(() => {
-		                cargarPensiones();
-		            }, 500); // Pequeño delay para asegurar que se guardó en BD
-		            
-		        } else {
-		            const errorText = await response.text();
-		            console.error('❌ Error del servidor:', errorText);
-		            mostrarAlerta('Error al registrar pensión: ' + errorText, 'error', 2);
-		        }
-		        
-		    } catch (error) {
-		        console.error('❌ Error de conexión:', error);
-		        mostrarAlerta('Error de conexión al registrar pensión: ' + error.message, 'error', 2);
-		        
-		    } finally {
-		        registrandoPension = false;
-		        
-		        // Rehabilitar botón
-		        if (btnRegistrar) {
-		            btnRegistrar.disabled = false;
-		            btnRegistrar.textContent = 'Registrar Pensión';
-		        }
-		    }
-		}
-
-		// ✅ FUNCIÓN CARGAR PENSIONES - CORREGIDA
-		async function cargarPensiones() {
-		    console.log('🔄 Iniciando carga de pensiones...');
-		    
-		    try {
-		        const response = await fetch('/pensiones/api/listar', {
-		            method: 'GET',
-		            headers: {
-		                'Accept': 'application/json',
-		                'Content-Type': 'application/json'
-		            }
-		        });
-		        
-		        console.log('📡 Response status:', response.status);
-		        console.log('📡 Response ok:', response.ok);
-		        
-		        if (!response.ok) {
-		            const errorText = await response.text();
-		            console.error('❌ Error response:', errorText);
-		            throw new Error(`HTTP ${response.status}: ${errorText}`);
-		        }
-		        
-		        const pensiones = await response.json();
-		        console.log('✅ Pensiones recibidas:', pensiones);
-		        console.log('📊 Cantidad de pensiones:', pensiones.length);
-		        
-		        mostrarPensiones(pensiones);
-		        
-		    } catch (error) {
-		        console.error('❌ Error completo al cargar pensiones:', error);
-		        
-		        const container = document.getElementById('pensionesList');
-		        if (container) {
-		            container.innerHTML = `
-		                <div style="text-align: center; color: #dc3545; padding: 40px; background: #f8d7da; border-radius: 8px;">
-		                    <h4>❌ Error al cargar pensiones</h4>
-		                    <p><strong>Detalle:</strong> ${error.message}</p>
-		                    <button class="btn" onclick="cargarPensiones()" style="margin-top: 15px;">
-		                        🔄 Reintentar
-		                    </button>
-		                </div>
-		            `;
-		        }
-		        
-		        mostrarAlerta('Error al cargar pensiones: ' + error.message, 'error', 2);
-		    }
-		}
-
-
-		// ✅ FUNCIÓN MOSTRAR PENSIONES - CORREGIDA
-		function mostrarPensiones(pensiones) {
-		    console.log('🔄 Mostrando pensiones en UI...');
-		    console.log('📊 Datos recibidos:', pensiones);
-		    
-		    const container = document.getElementById('pensionesList');
-		    
-		    if (!container) {
-		        console.error('❌ Container pensionesList no encontrado');
-		        return;
-		    }
-		    
-		    if (!pensiones || pensiones.length === 0) {
-		        console.log('ℹ️ No hay pensiones para mostrar');
-		        container.innerHTML = `
-		            <div style="text-align: center; color: #666; padding: 40px;">
-		                <h4>📋 No hay pensiones registradas</h4>
-		                <p>Las pensiones que registres aparecerán aquí.</p>
-		            </div>
-		        `;
-		        return;
-		    }
-		    
-		    console.log('✅ Generando HTML para', pensiones.length, 'pensiones');
-		    
-		    try {
-		        container.innerHTML = pensiones.map((pension, index) => {
-		            console.log(`📝 Procesando pensión ${index + 1}:`, pension);
-		            
-		            // Obtener datos del cliente de forma segura
-		            let nombreCliente = 'Cliente no encontrado';
-		            let dniCliente = '';
-		            
-		            if (pension.cliente) {
-		                if (pension.cliente.nombres && pension.cliente.apellidos) {
-		                    nombreCliente = `${pension.cliente.nombres} ${pension.cliente.apellidos}`;
-		                    dniCliente = pension.cliente.dni || '';
-		                } else if (pension.cliente.nombreCliente) {
-		                    nombreCliente = pension.cliente.nombreCliente;
+		            try {
+		                const response = await fetch(`/pensiones/api/por-empresa/${empresaId}`);
+		                if (!response.ok) throw new Error('Error al cargar las pensiones');
+		                const pensiones = await response.json();
+		                
+		                if (pensiones.length === 0) {
+		                    modalContenido.innerHTML = '<p class="text-center p-3">Esta empresa no tiene pensiones asociadas.</p>';
+		                    return;
 		                }
-		            }
-		            
-		            // Obtener datos de la empresa de forma segura
-		            let nombreEmpresa = 'Sin empresa asignada';
-		            if (pension.empresa && pension.empresa.razonSocial) {
-		                nombreEmpresa = pension.empresa.razonSocial;
-		            }
-		            
-		            // Datos básicos de la pensión
-		            const montoMensual = pension.montoMensual || 0;
-		            const fechaInicio = formatearFecha(pension.fechaInicio);
-		            const fechaFin = formatearFecha(pension.fechaFin);
-		            const estado = obtenerEstadoPension(pension.fechaInicio, pension.fechaFin);
-		            const idPension = pension.idPension || 'N/A';
-		            
-		            return `
-		                <div class="cliente-item" style="background: #ffffff; border: 1px solid #dee2e6; margin-bottom: 15px;">
-		                    <div class="cliente-info" style="flex: 1;">
-		                        <h4 style="color: #2c3e50; margin-bottom: 10px;">💼 Pensión #${idPension}</h4>
-		                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-		                            <div>
-		                                <p><strong>👤 Cliente:</strong> ${nombreCliente}</p>
-		                                ${dniCliente ? `<p><strong>📄 DNI:</strong> ${dniCliente}</p>` : ''}
-		                                <p><strong>🏢 Empresa:</strong> ${nombreEmpresa}</p>
-		                            </div>
-		                            <div>
-		                                <p><strong>💰 Monto Mensual:</strong> S/ ${Number(montoMensual).toFixed(2)}</p>
-		                                <p><strong>📅 Inicio:</strong> ${fechaInicio}</p>
-		                                <p><strong>📅 Fin:</strong> ${fechaFin}</p>
-		                                <p><strong>🔄 Estado:</strong> <span style="color: ${getColorEstado(estado)}; font-weight: bold;">${estado}</span></p>
-		                            </div>
+		                
+		                modalContenido.innerHTML = pensiones.map(p => `
+		                    <div class="cliente-item">
+		                        <div class="cliente-info">
+		                            <h5>${p.clienteNombre}</h5>
+		                            <p>Del ${p.fechaInicio} al ${p.fechaFin} - S/ ${p.montoMensual.toFixed(2)}</p>
 		                        </div>
+		                        <button class="btn btn-danger btn-sm" onclick="eliminarPensionDesdeModal(${p.idPension}, 'empresa', ${empresaId}, '${nombreEmpresa}')">Eliminar</button>
 		                    </div>
-		                    <div class="cliente-actions">
-		                        <button class="btn btn-secondary" onclick="editarPension(${idPension})">
-		                            ✏️ Editar
-		                        </button>
-		                        <button class="btn btn-danger" onclick="eliminarPension(${idPension}, '${nombreCliente.replace(/'/g, "\\'")}')">
-		                            🗑️ Eliminar
-		                        </button>
+		                `).join('');
+
+		            } catch (error) {
+		                modalContenido.innerHTML = `<p class="text-danger text-center">${error.message}</p>`;
+		            }
+		}
+		async function verPensionesDeCliente(clienteId, nombreCliente) {
+		        const modalTitulo = document.getElementById('modalPensionesTitulo');
+		        const modalContenido = document.getElementById('modalPensionesContenido');
+		        modalTitulo.textContent = `Pensiones de: ${nombreCliente}`;
+		        modalContenido.innerHTML = `<div class="loading">Cargando pensiones...</div>`;
+		        openModal('pensionesAsociadasModal');
+		        try {
+		            const response = await fetch(`/pensiones/api/por-cliente/${clienteId}`);
+		            if (!response.ok) throw new Error('Error al cargar las pensiones del cliente');
+		            const pensiones = await response.json();
+		            if (pensiones.length === 0) {
+		                modalContenido.innerHTML = '<p class="text-center p-3">Este cliente no tiene pensiones asociadas.</p>';
+		                return;
+		            }
+		            modalContenido.innerHTML = pensiones.map(p => `
+		                <div class="cliente-item">
+		                    <div class="cliente-info">
+		                        <h5>Pensión con ${p.empresaRazonSocial}</h5>
+		                        <p>Del ${p.fechaInicio} al ${p.fechaFin} - S/ ${p.montoMensual.toFixed(2)}</p>
 		                    </div>
+		                    <button class="btn btn-danger btn-sm" onclick="eliminarPensionDesdeModal(${p.idPension}, 'cliente', ${clienteId}, '${nombreCliente.replace(/'/g, "\\'")}')">Eliminar</button>
 		                </div>
-		            `;
-		        }).join('');
-		        
-		        console.log('✅ HTML generado exitosamente');
-		        
-		    } catch (error) {
-		        console.error('❌ Error generando HTML:', error);
-		        container.innerHTML = `
-		            <div style="text-align: center; color: #dc3545; padding: 20px;">
-		                <h4>❌ Error mostrando pensiones</h4>
-		                <p>${error.message}</p>
-		            </div>
-		        `;
+		            `).join('');
+		        } catch (error) {
+		            modalContenido.innerHTML = `<p class="text-danger text-center">${error.message}</p>`;
+		        }
 		    }
+		async function eliminarPensionDesdeModal(pensionId, tipoOrigen, origenId, nombreOrigen) {
+		            if (!confirm(`¿Seguro que quieres eliminar esta pensión?`)) return;
+		            try {
+		                const response = await fetch(`/pensiones/eliminar/${pensionId}`, { method: 'DELETE' });
+		                if (!response.ok) throw new Error(await response.text());
+		                
+		                // Refrescar la vista del modal y la lista principal de pensiones
+		                if (tipoOrigen === 'empresa') {
+		                    verPensionesDeEmpresa(origenId, nombreOrigen);
+		                } else {
+		                    verPensionesDeCliente(origenId, nombreOrigen);
+		                }
+		                cargarPensiones(); // Recarga la lista principal en segundo plano
+
+		            } catch (error) {
+		                alert('Error al eliminar pensión: ' + error.message);
+		            }
 		}
 
-		// Funciones de limpieza
-		function limpiarFormularioCliente() {
-		    document.getElementById('clienteForm').reset();
-		    document.querySelectorAll('.dynamic-fields').forEach(field => {
-		        field.classList.remove('show');
-		    });
-		}
+	    function renderizarPaginacion(containerId, pageData, callbackFunctionName) {
+	        const container = document.getElementById(containerId);
+	        container.innerHTML = '';
+	        if (pageData.totalPages <= 1) return;
+	        const { number: currentPage, totalPages, size } = pageData;
+	        const createLink = (page, text, disabled = false) => `<li class="page-item ${disabled ? 'disabled' : ''} ${page === currentPage ? 'active' : ''}"><a class="page-link" href="#" onclick="event.preventDefault(); window['${callbackFunctionName}'](${page}, ${size})">${text}</a></li>`;
+	        container.innerHTML += createLink(currentPage - 1, '&laquo;', currentPage === 0);
+	        for (let i = 0; i < totalPages; i++) { container.innerHTML += createLink(i, i + 1); }
+	        container.innerHTML += createLink(currentPage + 1, '&raquo;', currentPage >= totalPages - 1);
+	    }
+	    
+	    function toggleClienteFields() {
+	        const tipo = document.getElementById('tipoCliente').value;
+	        document.getElementById('camposParticular').classList.toggle('show', tipo === 'PARTICULAR');
+	        document.getElementById('camposPensionado').classList.toggle('show', tipo === 'PENSION');
+	    }
 
-		function limpiarFormularioEmpresa() {
-		    document.getElementById('empresaForm').reset();
-		}
+	    async function registrarCliente() {
+	        const tipo = document.getElementById('tipoCliente').value;
+	        if (!tipo) { mostrarAlerta('Seleccione un tipo de cliente', 'error', 1); return; }
+	        let clienteData = { tipoCliente: tipo };
+	        if (tipo === 'PARTICULAR') {
+	            clienteData.nombreCliente = document.getElementById('nombreParticular').value.trim();
+	        } else {
+	            clienteData.dni = document.getElementById('dniPensionado').value.trim();
+	            clienteData.nombres = document.getElementById('nombresPensionado').value.trim();
+	            clienteData.apellidos = document.getElementById('apellidosPensionado').value.trim();
+	        }
+	        try {
+	            const response = await fetch('/clientes/guardar', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(clienteData) });
+	            if (!response.ok) throw new Error(await response.text());
+	            mostrarAlerta('Cliente registrado con éxito', 'success', 1);
+	            limpiarFormularioCliente();
+	            cargarClientes();
+	            if (tipo === 'PENSION') cargarClientesPensionados();
+	        } catch (error) { mostrarAlerta('Error: ' + error.message, 'error', 1); }
+	    }
 
-		function limpiarFormularioPension() {
-		    document.getElementById('pensionForm').reset();
-		}
+	    async function registrarEmpresa() {
+	        const empresaData = { ruc: document.getElementById('rucEmpresa').value.trim(), razonSocial: document.getElementById('razonSocial').value.trim() };
+	        try {
+	            const response = await fetch('/empresas/guardar', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(empresaData) });
+	            if (!response.ok) throw new Error(await response.text());
+	            mostrarAlerta('Empresa registrada con éxito', 'success', 2);
+	            limpiarFormularioEmpresa();
+	            cargarEmpresas();
+	            cargarEmpresasParaDropdown();
+	        } catch (error) { mostrarAlerta('Error: ' + error.message, 'error', 2); }
+	    }
 
-		// Función para eliminar cliente
+	    async function registrarPension() {
+	        const pensionData = {
+	            empresaId: parseInt(document.getElementById('empresaPension').value),
+	            clienteId: parseInt(document.getElementById('clientePension').value),
+	            montoMensual: parseFloat(document.getElementById('montoMensual').value),
+	            fechaInicio: document.getElementById('fechaInicio').value,
+	            fechaFin: document.getElementById('fechaFin').value
+	        };
+	        try {
+	            const response = await fetch('/pensiones/guardar', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(pensionData) });
+	            if (!response.ok) throw new Error(await response.text());
+	            mostrarAlerta('Pensión registrada con éxito', 'success', 2);
+	            limpiarFormularioPension();
+	            cargarPensiones();
+	        } catch (error) { mostrarAlerta('Error: ' + error.message, 'error', 2); }
+	    }
+
+	    async function cargarClientesPensionados() {
+	        try {
+	            const response = await fetch('/clientes/api/tipo/PENSION');
+	            if (!response.ok) return;
+	            const clientes = await response.json();
+	            const select = document.getElementById('clientePension');
+	            select.innerHTML = '<option value="">Seleccione un cliente...</option>';
+	            clientes.forEach(c => { select.innerHTML += `<option value="${c.idCliente}">${c.nombres} ${c.apellidos}</option>`; });
+	        } catch (error) { console.error(error); }
+	    }
+
+	    async function cargarEmpresasParaDropdown() {
+	        try {
+	            const response = await fetch('/empresas/api/listar?size=100'); 
+	            if (!response.ok) throw new Error('No se pudo cargar la lista de empresas');
+	            const paginaDeEmpresas = await response.json();
+	            const empresas = paginaDeEmpresas.content;
+	            const select = document.getElementById('empresaPension');
+	            select.innerHTML = '<option value="">Seleccione una empresa...</option>';
+	            empresas.forEach(empresa => { select.innerHTML += `<option value="${empresa.idEmpresa}">${empresa.razonSocial}</option>`; });
+	        } catch (error) {
+	            console.error('Error cargando empresas para el dropdown:', error);
+	            document.getElementById('empresaPension').innerHTML = '<option value="">Error al cargar</option>';
+	        }
+	    }
+
+	    function openModal(modalId) { document.getElementById(modalId).style.display = 'block'; }
+	    function closeModal(modalId) { document.getElementById(modalId).style.display = 'none'; }
+	    
+	    async function editarCliente(id) {
+	        try {
+	            const response = await fetch(`/clientes/api/buscar/${id}`);
+	            if (!response.ok) throw new Error('Cliente no encontrado');
+	            const cliente = await response.json();
+	            document.getElementById('editClienteId').value = cliente.idCliente;
+	            const esParticular = cliente.tipoCliente === 'PARTICULAR';
+	            document.getElementById('editCamposParticular').style.display = esParticular ? 'block' : 'none';
+	            document.getElementById('editCamposPensionado').style.display = !esParticular ? 'block' : 'none';
+	            if (esParticular) { document.getElementById('editNombreParticular').value = cliente.nombreCliente; } 
+	            else { document.getElementById('editDniPensionado').value = cliente.dni; document.getElementById('editNombresPensionado').value = cliente.nombres; document.getElementById('editApellidosPensionado').value = cliente.apellidos; }
+	            openModal('editClienteModal');
+	        } catch (error) { mostrarAlerta(error.message, 'error', 1); }
+	    }
+	    async function guardarCambiosCliente() {
+	        const id = document.getElementById('editClienteId').value;
+	        const clienteOriginal = clientesData.find(c => c.idCliente == id);
+	        if (!clienteOriginal) { mostrarAlerta('Error: no se pudo encontrar el cliente original.', 'error', 1); return; }
+	        let data = { idCliente: parseInt(id), tipoCliente: clienteOriginal.tipoCliente };
+	        if (clienteOriginal.tipoCliente === 'PARTICULAR') { data.nombreCliente = document.getElementById('editNombreParticular').value; } 
+	        else { data.dni = document.getElementById('editDniPensionado').value; data.nombres = document.getElementById('editNombresPensionado').value; data.apellidos = document.getElementById('editApellidosPensionado').value; }
+	        try {
+	            const response = await fetch('/clientes/actualizar', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data) });
+	            if (!response.ok) throw new Error(await response.text());
+	            mostrarAlerta('Cliente actualizado', 'success', 1);
+	            closeModal('editClienteModal');
+	            cargarClientes(document.querySelector('#paginacionClientes .active a')?.textContent - 1 || 0);
+	        } catch (error) { mostrarAlerta('Error: ' + error.message, 'error', 1); }
+	    }
+
+	    async function editarEmpresa(id) {
+	        try {
+	            const response = await fetch(`/empresas/api/buscar/${id}`);
+	            if (!response.ok) throw new Error('Empresa no encontrada');
+	            const empresa = await response.json();
+	            document.getElementById('editEmpresaId').value = empresa.idEmpresa;
+	            document.getElementById('editRucEmpresa').value = empresa.ruc;
+	            document.getElementById('editRazonSocial').value = empresa.razonSocial;
+	            openModal('editEmpresaModal');
+	        } catch (error) { mostrarAlerta(error.message, 'error', 2); }
+	    }
+	    async function guardarCambiosEmpresa() {
+	         const data = { idEmpresa: parseInt(document.getElementById('editEmpresaId').value), razonSocial: document.getElementById('editRazonSocial').value };
+	        try {
+	            const response = await fetch('/empresas/actualizar', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data) });
+	            if (!response.ok) throw new Error(await response.text());
+	            mostrarAlerta('Empresa actualizada', 'success', 2);
+	            closeModal('editEmpresaModal');
+	            cargarEmpresas(document.querySelector('#paginacionEmpresas .active a')?.textContent - 1 || 0);
+	        } catch (error) { mostrarAlerta('Error: ' + error.message, 'error', 2); }
+	    }
+
+	    async function editarPension(id) {
+	        try {
+	            const response = await fetch(`/pensiones/api/buscar/${id}`);
+	            if (!response.ok) throw new Error('Pensión no encontrada');
+	            const pension = await response.json();
+	            document.getElementById('editPensionId').value = pension.idPension;
+	            document.getElementById('editPensionCliente').value = pension.clienteNombre;
+	            document.getElementById('editPensionEmpresa').value = pension.empresaRazonSocial;
+	            document.getElementById('editMontoMensual').value = pension.montoMensual;
+	            document.getElementById('editFechaInicio').value = pension.fechaInicio;
+	            document.getElementById('editFechaFin').value = pension.fechaFin;
+	            openModal('editPensionModal');
+	        } catch (error) { mostrarAlerta(error.message, 'error', 2); }
+	    }
+	    async function guardarCambiosPension() {
+	        const data = { idPension: parseInt(document.getElementById('editPensionId').value), montoMensual: document.getElementById('editMontoMensual').value, fechaInicio: document.getElementById('editFechaInicio').value, fechaFin: document.getElementById('editFechaFin').value };
+	        try {
+	            const response = await fetch('/pensiones/actualizar', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data) });
+	            if (!response.ok) throw new Error(await response.text());
+	            mostrarAlerta('Pensión actualizada', 'success', 2);
+	            closeModal('editPensionModal');
+	            cargarPensiones(document.querySelector('#paginacionPensiones .active a')?.textContent - 1 || 0);
+	        } catch (error) { mostrarAlerta('Error: ' + error.message, 'error', 2); }
+	    }
+	    
 		async function eliminarCliente(id, nombre) {
-		    if (!confirm(`¿Está seguro de eliminar al cliente "${nombre}"?`)) return;
-		    
-		    try {
-		        const response = await fetch(`/clientes/eliminar/${id}`, { method: 'POST' });
-		        
-		        if (response.ok) {
-		            mostrarAlerta('Cliente eliminado exitosamente', 'success', 1);
-		            cargarClientes();
-		        } else {
-		            mostrarAlerta('Error al eliminar el cliente', 'error', 1);
-		        }
-		    } catch (error) {
-		        mostrarAlerta('Error de conexión', 'error', 1);
-		    }
+		            if (!confirm(`¿Seguro que quieres eliminar a ${nombre}?`)) return;
+		            try {
+		                const response = await fetch(`/clientes/eliminar/${id}`, { method: 'DELETE' });
+		                if (!response.ok) throw new Error(await response.text());
+		                mostrarAlerta('Cliente eliminado', 'success', 1);
+		                cargarClientes();
+		            } catch (error) { mostrarAlerta('Error: ' + error.message, 'error', 1); }
 		}
-
-		// Función para eliminar empresa
 		async function eliminarEmpresa(id, nombre) {
-		    if (!confirm(`¿Está seguro de eliminar la empresa "${nombre}"?`)) return;
-		    
+		    if (!confirm(`¿Seguro que quieres eliminar a ${nombre}?`)) return;
 		    try {
-		        const response = await fetch(`/empresas/eliminar/${id}`, { method: 'POST' });
-		        
-		        if (response.ok) {
-		            mostrarAlerta('Empresa eliminada exitosamente', 'success', 2);
-		            cargarEmpresas();
-		        } else {
-		            mostrarAlerta('Error al eliminar la empresa', 'error', 2);
-		        }
-		    } catch (error) {
-		        mostrarAlerta('Error de conexión', 'error', 2);
-		    }
+		        const response = await fetch(`/empresas/eliminar/${id}`, { method: 'DELETE' });
+		        if (!response.ok) throw new Error(await response.text());
+		        mostrarAlerta('Empresa eliminada', 'success', 2);
+		        cargarEmpresas();
+		    } catch (error) { mostrarAlerta('Error: ' + error.message, 'error', 2); }
 		}
-
-		// ✅ NUEVA FUNCIÓN: ELIMINAR PENSIÓN
 		async function eliminarPension(id, nombreCliente) {
-		    if (!confirm(`¿Está seguro de eliminar la pensión del cliente "${nombreCliente}"?`)) {
-		        return;
-		    }
-		    
+		    if (!confirm(`¿Seguro que quieres eliminar la pensión de ${nombreCliente}?`)) return;
 		    try {
-		        const response = await fetch(`/pensiones/eliminar/${id}`, { 
-		            method: 'POST',
-		            headers: {
-		                'Accept': 'application/json'
-		            }
-		        });
-		        
-		        if (response.ok) {
-		            mostrarAlerta('Pensión eliminada exitosamente', 'success', 2);
-		            cargarPensiones(); // Recargar lista
-		        } else {
-		            const errorText = await response.text();
-		            mostrarAlerta('Error: ' + errorText, 'error', 2);
-		        }
-		    } catch (error) {
-		        console.error('Error:', error);
-		        mostrarAlerta('Error de conexión al eliminar', 'error', 2);
-		    }
+		        const response = await fetch(`/pensiones/eliminar/${id}`, { method: 'DELETE' });
+		        if (!response.ok) throw new Error(await response.text());
+		        mostrarAlerta('Pensión eliminada', 'success', 2);
+		        cargarPensiones();
+		    } catch (error) { mostrarAlerta('Error: ' + error.message, 'error', 2); }
 		}
 
-		
-		// Mostrar alertas
-		function mostrarAlerta(mensaje, tipo, containerId) {
-		    const container = document.getElementById(`alertContainer${containerId}`);
-		    const alertClass = tipo === 'success' ? 'alert-success' : 'alert-error';
-		    
-		    container.innerHTML = `<div class="alert ${alertClass}">${mensaje}</div>`;
-		    
-		    setTimeout(() => {
-		        container.innerHTML = '';
-		    }, 5000);
-		}
-
-		// Formatear tipo de cliente
-		function formatearTipoCliente(tipo) {
-		    const tipos = {
-		        'PARTICULAR': 'Particular',
-		        'PENSION': 'Pensionado'
-		    };
-		    return tipos[tipo] || tipo;
-		}
-
-		// ✅ FUNCIONES AUXILIARES NUEVAS
-		function obtenerEstadoPension(fechaInicio, fechaFin) {
-		    const hoy = new Date();
-		    const inicio = new Date(fechaInicio);
-		    const fin = new Date(fechaFin);
-		    
-		    if (hoy < inicio) {
-		        return 'Pendiente';
-		    } else if (hoy >= inicio && hoy <= fin) {
-		        return 'Activa';
-		    } else {
-		        return 'Vencida';
-		    }
-		}
-
-		function formatearFecha(fechaStr) {
-		    if (!fechaStr) return 'N/A';
-		    
-		    try {
-		        const fecha = new Date(fechaStr);
-		        return fecha.toLocaleDateString('es-PE', {
-		            day: '2-digit',
-		            month: '2-digit',
-		            year: 'numeric'
-		        });
-		    } catch (e) {
-		        return fechaStr;
-		    }
-		}
-		// ✅ FUNCIÓN AUXILIAR PARA COLOR DE ESTADO
-		function getColorEstado(estado) {
-		    switch (estado) {
-		        case 'Activa': return '#28a745';
-		        case 'Pendiente': return '#ffc107';
-		        case 'Vencida': return '#dc3545';
-		        default: return '#6c757d';
-		    }
-		}
-		// --- FUNCIONES PARA MODALES Y EDICIÓN ---
-
-		    function openModal(modalId) {
-		        document.getElementById(modalId).style.display = 'block';
-		    }
-
-		    function closeModal(modalId) {
-		        document.getElementById(modalId).style.display = 'none';
-		    }
-
-		    // Editar Cliente
-		    async function editarCliente(id) {
-		        try {
-		            const response = await fetch(`/clientes/api/buscar/${id}`);
-		            if (!response.ok) throw new Error('Cliente no encontrado');
-		            const cliente = await response.json();
-
-		            document.getElementById('editClienteId').value = cliente.idCliente;
-		            
-		            if (cliente.tipoCliente === 'PARTICULAR') {
-		                document.getElementById('editCamposParticular').style.display = 'block';
-		                document.getElementById('editCamposPensionado').style.display = 'none';
-		                document.getElementById('editNombreParticular').value = cliente.nombreCliente;
-		            } else {
-		                document.getElementById('editCamposParticular').style.display = 'none';
-		                document.getElementById('editCamposPensionado').style.display = 'block';
-		                document.getElementById('editDniPensionado').value = cliente.dni;
-		                document.getElementById('editNombresPensionado').value = cliente.nombres;
-		                document.getElementById('editApellidosPensionado').value = cliente.apellidos;
-		            }
-		            
-		            openModal('editClienteModal');
-		        } catch (error) {
-		            mostrarAlerta(error.message, 'error', 1);
-		        }
-		    }
-
-		    async function guardarCambiosCliente() {
-		        const id = document.getElementById('editClienteId').value;
-		        const cliente = clientesData.find(c => c.idCliente == id);
-		        let data = { idCliente: parseInt(id), tipoCliente: cliente.tipoCliente };
-
-		        if (cliente.tipoCliente === 'PARTICULAR') {
-		            data.nombreCliente = document.getElementById('editNombreParticular').value;
-		        } else {
-		            data.dni = document.getElementById('editDniPensionado').value;
-		            data.nombres = document.getElementById('editNombresPensionado').value;
-		            data.apellidos = document.getElementById('editApellidosPensionado').value;
-		        }
-
-		        try {
-		            const response = await fetch('/clientes/actualizar', {
-		                method: 'POST',
-		                headers: {'Content-Type': 'application/json'},
-		                body: JSON.stringify(data)
-		            });
-		            const responseText = await response.text();
-		            if (!response.ok) throw new Error(responseText);
-		            
-		            mostrarAlerta('Cliente actualizado con éxito', 'success', 1);
-		            closeModal('editClienteModal');
-		            await cargarClientes(); // Recargar datos
-		        } catch (error) {
-		            mostrarAlerta('Error: ' + error.message, 'error', 1);
-		        }
-		    }
-
-		    // Editar Empresa
-		    async function editarEmpresa(id) {
-		        try {
-		            const response = await fetch(`/empresas/api/buscar/${id}`);
-		            if (!response.ok) throw new Error('Empresa no encontrada');
-		            const empresa = await response.json();
-
-		            document.getElementById('editEmpresaId').value = empresa.idEmpresa;
-		            document.getElementById('editRucEmpresa').value = empresa.ruc;
-		            document.getElementById('editRazonSocial').value = empresa.razonSocial;
-		            
-		            openModal('editEmpresaModal');
-		        } catch (error) {
-		            mostrarAlerta(error.message, 'error', 2);
-		        }
-		    }
-		    
-		    async function guardarCambiosEmpresa() {
-		        const data = {
-		            idEmpresa: parseInt(document.getElementById('editEmpresaId').value),
-		            razonSocial: document.getElementById('editRazonSocial').value
-		        };
-		        
-		        try {
-		            const response = await fetch('/empresas/actualizar', {
-		                method: 'POST',
-		                headers: {'Content-Type': 'application/json'},
-		                body: JSON.stringify(data)
-		            });
-		            const responseText = await response.text();
-		            if (!response.ok) throw new Error(responseText);
-
-		            mostrarAlerta('Empresa actualizada con éxito', 'success', 2);
-		            closeModal('editEmpresaModal');
-		            await cargarEmpresas(); // Recargar datos
-		        } catch (error) {
-		            mostrarAlerta('Error: ' + error.message, 'error', 2);
-		        }
-		    }
-
-		    // Editar Pensión
-		    async function editarPension(id) {
-		        try {
-		            const response = await fetch(`/pensiones/api/buscar/${id}`);
-		            if (!response.ok) throw new Error('Pensión no encontrada');
-		            const pension = await response.json();
-
-		            document.getElementById('editPensionId').value = pension.idPension;
-		            document.getElementById('editPensionCliente').value = pension.clienteNombre;
-		            document.getElementById('editPensionEmpresa').value = pension.empresaRazonSocial;
-		            document.getElementById('editMontoMensual').value = pension.montoMensual;
-		            document.getElementById('editFechaInicio').value = pension.fechaInicio;
-		            document.getElementById('editFechaFin').value = pension.fechaFin;
-		            
-		            openModal('editPensionModal');
-		        } catch (error) {
-		            mostrarAlerta(error.message, 'error', 2);
-		        }
-		    }
-
-		    async function guardarCambiosPension() {
-		        const data = {
-		            idPension: parseInt(document.getElementById('editPensionId').value),
-		            montoMensual: document.getElementById('editMontoMensual').value,
-		            fechaInicio: document.getElementById('editFechaInicio').value,
-		            fechaFin: document.getElementById('editFechaFin').value
-		        };
-
-		        try {
-		            const response = await fetch('/pensiones/actualizar', {
-		                method: 'POST',
-		                headers: {'Content-Type': 'application/json'},
-		                body: JSON.stringify(data)
-		            });
-		            const responseText = await response.text();
-		            if (!response.ok) throw new Error(responseText);
-
-		            mostrarAlerta('Pensión actualizada con éxito', 'success', 2);
-		            closeModal('editPensionModal');
-		            await cargarPensiones(); // Recargar datos
-		        } catch (error) {
-		            mostrarAlerta('Error: ' + error.message, 'error', 2);
-		        }
-		    }
-    </script>
-</body>
-</html>
+	    function mostrarAlerta(mensaje, tipo, containerId) {
+	        const container = document.getElementById(`alertContainer${containerId}`);
+	        if(container) {
+	            container.innerHTML = `<div class="alert alert-${tipo === 'success' ? 'alert-success' : 'alert-danger'}">${mensaje}</div>`;
+	            setTimeout(() => { container.innerHTML = ''; }, 4000);
+	        }
+	    }
+	    function limpiarFormularioCliente() { document.getElementById('clienteForm').reset(); toggleClienteFields(); }
+	    function limpiarFormularioEmpresa() { document.getElementById('empresaForm').reset(); }
+	    function limpiarFormularioPension() { document.getElementById('pensionForm').reset(); }
+	</script>
+	</body>
+	</html>

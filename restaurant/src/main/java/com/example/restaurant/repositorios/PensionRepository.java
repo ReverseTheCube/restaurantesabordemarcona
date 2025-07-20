@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import com.example.restaurant.dto.PensionDTO;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -31,6 +32,11 @@ public interface PensionRepository extends JpaRepository<Pension, Integer> {
            "WHERE p.fechaInicio <= :fecha " +
            "AND p.fechaFin >= :fecha")
     List<Pension> findPensionesActivas(@Param("fecha") LocalDate fecha);
+    @Query("SELECT new com.example.restaurant.dto.PensionDTO(p) FROM Pension p WHERE p.empresa.idEmpresa = :empresaId")
+    List<PensionDTO> findPensionsByEmpresaId(@Param("empresaId") Integer empresaId);
+
+    @Query("SELECT new com.example.restaurant.dto.PensionDTO(p) FROM Pension p WHERE p.cliente.idCliente = :clienteId")
+    List<PensionDTO> findPensionsByClienteId(@Param("clienteId") Integer clienteId);
     
     // Buscar pensiones que vencen pronto
     @Query("SELECT p FROM Pension p " +

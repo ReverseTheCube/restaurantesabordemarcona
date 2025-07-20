@@ -9,7 +9,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.SortDefault;
+import org.springframework.data.domain.Sort;
 import java.util.List;
 import java.util.Optional;
 
@@ -101,31 +104,9 @@ public class ClienteController {
      */
     @GetMapping("/api/buscar/todos")
     @ResponseBody
-    public ResponseEntity<?> obtenerTodosClientes() {
-        try {
-            System.out.println("🔄 Cargando todos los clientes...");
-            
-            List<Cliente> clientes = clienteRepository.findAll();
-            
-            // Forzar carga de propiedades lazy solo si es necesario
-            for (Cliente cliente : clientes) {
-                // No cargar pensiones ni pedidos para evitar lazy loading issues
-                if (cliente.getTipoCliente() == TipoCliente.PENSION) {
-                    // Asegurar que los campos del pensionado estén disponibles
-                    cliente.getNombreCompleto();
-                }
-            }
-            
-            System.out.println("📊 Clientes encontrados: " + clientes.size());
-            
-            return ResponseEntity.ok(clientes);
-            
-        } catch (Exception e) {
-            System.err.println("❌ Error al cargar clientes: " + e.getMessage());
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error al cargar clientes: " + e.getMessage());
-        }
+    public ResponseEntity<Page<Cliente>> obtenerTodosClientes(Pageable pageable) {
+        Page<Cliente> clientesPaginados = clienteRepository.findAll(pageable);
+        return ResponseEntity.ok(clientesPaginados);
     }
     
     /**
@@ -189,7 +170,7 @@ public class ClienteController {
     /**
      * ✅ ELIMINAR CLIENTE - CORREGIDO
      */
-    @PostMapping("/eliminar/{id}")
+    @DeleteMapping("/eliminar/{id}")
     @ResponseBody
     public ResponseEntity<?> eliminarCliente(@PathVariable("id") Integer id) {
         try {
