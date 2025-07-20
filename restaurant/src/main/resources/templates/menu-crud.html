@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Gestión de Menú</title>
+<script th:src="@{/js/app.js}"></script>
+<link rel="stylesheet" th:href="@{/css/menu-crud.css}">
+
+
+<style>
+/* Solución temporal para visibilidad */
+.crud-container>div {
+	display: block !important;
+}
+
+.crud-actions {
+	display: flex;
+	justify-content: flex-start;
+	margin-bottom: 20px;
+	width: 100%;
+}
+
+.tab-content {
+	display: block !important;
+	opacity: 1 !important;
+	visibility: visible !important;
+}
+
+.btn-add {
+	display: inline-block !important;
+	opacity: 1 !important;
+	visibility: visible !important;
+}
+</style>
+
+
+</head>
+<body>
+	<div class="crud-container">
+		<h1>Gestión de Menú</h1>
+
+		<div th:if="${message}" th:class="'alert alert-' + ${messageType}"
+			th:text="${message}"></div>
+
+		<!-- Tabs -->
+		<div class="tabs">
+			<a th:href="@{/menu-crud(tab='comidas')}" class="tab-button"
+				th:classappend="${tab} == 'comidas' ? ' active' : ''">Platos</a> <a
+				th:href="@{/menu-crud(tab='entradas')}" class="tab-button"
+				th:classappend="${tab} == 'entradas' ? ' active' : ''">Entradas</a>
+			<a th:href="@{/menu-crud(tab='bebidas')}" class="tab-button"
+				th:classappend="${tab} == 'bebidas' ? ' active' : ''">Bebidas</a>
+		</div>
+
+		<!-- Contenido usando switch -->
+		<div th:switch="${tab}">
+			<!-- TAB: PLATOS -->
+			<div th:case="'comidas'" class="tab-content">
+				<h2>Gestión de Platos</h2>
+				<div class="crud-actions">
+					<button class="btn-add" onclick="abrirModal('comida')">Agregar</button>
+				</div>
+				<table class="crud-table">
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th>Nombre</th>
+							<th>Tipo</th>
+							<th>Precio</th>
+							<th>Acciones</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:if="${comidas.empty}">
+							<td colspan="5" style="text-align: center;">No hay platos
+								registrados</td>
+						</tr>
+						<tr th:each="comida : ${comidas}">
+							<td th:text="${comida.idComida}"></td>
+							<td th:text="${comida.nombreComida}"></td>
+							<td th:text="${comida.tipoComida}"></td>
+							<td th:text="'S/' + ${comida.precio}"></td>
+							<td><a href="javascript:void(0);" class="btn-edit"
+								th:onclick="'editarElemento(\'comida\', ' + ${comida.idComida} + ')'">Editar</a>
+								<form
+									th:action="@{'/menu-crud/comida/eliminar/' + ${comida.idComida}}"
+									method="post" style="display: inline;">
+									<button type="submit" class="btn-delete"
+										onclick="return confirm('¿Está seguro?')">Eliminar</button>
+								</form></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+			<!-- TAB: ENTRADAS -->
+			<div th:case="'entradas'" class="tab-content">
+				<h2>Gestión de Entradas</h2>
+				<div class="crud-actions">
+					<button class="btn-add" onclick="abrirModal('comida')">Agregar</button>
+				</div>
+				<table class="crud-table">
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th>Nombre</th>
+							<th>Tipo</th>
+							<th>Precio</th>
+							<th>Acciones</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:if="${comidas.empty}">
+							<td colspan="5" style="text-align: center;">No hay entradas
+								registradas</td>
+						</tr>
+						<tr th:each="comida : ${comidas}">
+							<td th:text="${comida.idComida}"></td>
+							<td th:text="${comida.nombreComida}"></td>
+							<td th:text="${comida.tipoComida}"></td>
+							<td th:text="'S/' + ${comida.precio}"></td>
+							<td><a href="javascript:void(0);" class="btn-edit"
+								th:onclick="'editarElemento(\'comida\', ' + ${comida.idComida} + ')'">Editar</a>
+								<form
+									th:action="@{'/menu-crud/comida/eliminar/' + ${comida.idComida}}"
+									method="post" style="display: inline;">
+									<button type="submit" class="btn-delete"
+										onclick="return confirm('¿Está seguro?')">Eliminar</button>
+								</form></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+			<!-- TAB: BEBIDAS -->
+			<div th:case="'bebidas'" class="tab-content">
+				<h2>Gestión de Bebidas</h2>
+				<div class="crud-actions">
+					<button class="btn-add" onclick="abrirModal('bebida')">Agregar</button>
+				</div>
+				<table class="crud-table">
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th>Nombre</th>
+							<th>Tipo</th>
+							<th>Precio</th>
+							<th>Acciones</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:if="${bebidas.empty}">
+							<td colspan="5" style="text-align: center;">No hay bebidas
+								registradas</td>
+						</tr>
+						<tr th:each="bebida : ${bebidas}">
+							<td th:text="${bebida.idBebida}"></td>
+							<td th:text="${bebida.nombreBebida}"></td>
+							<td th:text="${bebida.tipoBebida}"></td>
+							<td th:text="'S/' + ${bebida.precio}"></td>
+							<td><a href="javascript:void(0);" class="btn-edit"
+								th:onclick="'editarElemento(\'bebida\', ' + ${bebida.idBebida} + ')'">Editar</a>
+								<form
+									th:action="@{'/menu-crud/bebida/eliminar/' + ${bebida.idBebida}}"
+									method="post" style="display: inline;">
+									<button type="submit" class="btn-delete"
+										onclick="return confirm('¿Está seguro?')">Eliminar</button>
+								</form></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+			<!-- FALLBACK EN CASO DE ERROR -->
+			<div th:case="*" class="tab-content">
+				<p>
+					No se reconoce la pestaña actual: <span th:text="${tab}"></span>
+				</p>
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal -->
+	<div id="modalFormulario" class="modal" style="display: none;">
+		<div class="modal-content">
+			<span class="close-modal" onclick="cerrarModal()">&times;</span>
+			<form th:action="@{/menu-crud/guardarComida}" method="post"
+				id="formModal">
+				<!-- Campo oculto para tipo de comida -->
+				<input type="hidden" name="tipoComida" id="tipoComidaOculto" />
+
+				<!-- Campo para tipo de bebida (oculto inicialmente) -->
+				<div id="tipoBebidaContainer" style="display: none;">
+					<label for="tipoBebida">Tipo de bebida:</label> <select
+						name="tipoBebida" id="tipoBebida">
+						<option value="gaseosa">Gaseosa</option>
+						<option value="jugo">Jugo</option>
+					</select>
+				</div>
+
+				<div>
+					<label for="nombre">Nombre:</label> <input type="text"
+						name="nombre" id="nombre" required>
+				</div>
+				<div>
+					<label for="precio">Precio:</label> <input type="number"
+						step="0.01" name="precio" id="precio" required>
+				</div>
+				<button type="submit">Guardar</button>
+			</form>
+		</div>
+	</div>
+
+	<script th:inline="javascript">
+		function abrirModal(tipo) {
+			document.getElementById('modalFormulario').style.display = 'block';
+			const form = document.getElementById('formModal');
+			const tipoComidaOculto = document
+					.getElementById('tipoComidaOculto');
+			const tipoBebidaContainer = document
+					.getElementById('tipoBebidaContainer');
+			const tipoBebidaSelect = document.getElementById('tipoBebida');
+
+			// Limpiar ID oculto si existe
+			const idOculto = document.getElementById('idOculto');
+			if (idOculto) {
+				idOculto.remove();
+			}
+
+			form.reset();
+
+			if (tipo === 'comida') {
+				form.action = '/menu-crud/guardarComida';
+				const tab = new URLSearchParams(window.location.search)
+						.get('tab');
+				// Establecer valor para tipo de comida
+				tipoComidaOculto.value = (tab === 'entradas') ? 'entrada'
+						: 'plato';
+				tipoBebidaContainer.style.display = 'none';
+
+				// Asegurarse de que el campo de bebida no se envíe
+				tipoBebidaSelect.disabled = true;
+				tipoComidaOculto.disabled = false;
+
+			} else if (tipo === 'bebida') {
+				form.action = '/menu-crud/guardarBebida';
+				// Establecer valor por defecto para bebida
+				tipoBebidaSelect.value = 'gaseosa';
+				tipoBebidaContainer.style.display = 'block';
+
+				// Asegurarse de que el campo de comida no se envíe
+				tipoComidaOculto.disabled = true;
+				tipoBebidaSelect.disabled = false;
+			}
+		}
+
+		function cerrarModal() {
+			document.getElementById('modalFormulario').style.display = 'none';
+		}
+
+		async
+		function editarElemento(tipo, id) {
+			const modal = document.getElementById('modalFormulario');
+			const form = document.getElementById('formModal');
+			const tipoComidaOculto = document
+					.getElementById('tipoComidaOculto');
+			const tipoBebidaContainer = document
+					.getElementById('tipoBebidaContainer');
+			const tipoBebidaSelect = document.getElementById('tipoBebida');
+
+			// Limpiar ID oculto si existe
+			const idOcultoExistente = document.getElementById('idOculto');
+			if (idOcultoExistente) {
+				idOcultoExistente.remove();
+			}
+
+			modal.style.display = 'block';
+
+			if (tipo === 'comida') {
+				form.action = '/menu-crud/guardarComida';
+				const res = await
+				fetch(`/menu-crud/comida/editar/${id}`);
+				const data = await
+				res.json();
+				form.nombre.value = data.nombreComida;
+				form.precio.value = data.precio;
+
+				// CORRECCIÓN: Usar el campo correcto para tipo de comida
+				tipoComidaOculto.value = data.tipoComida;
+				tipoBebidaContainer.style.display = 'none';
+				tipoBebidaSelect.disabled = true;
+				tipoComidaOculto.disabled = false;
+
+			} else if (tipo === 'bebida') {
+				form.action = '/menu-crud/guardarBebida';
+				const res = await
+				fetch(`/menu-crud/bebida/editar/${id}`);
+				const data = await
+				res.json();
+				form.nombre.value = data.nombreBebida;
+				form.precio.value = data.precio;
+
+				// CORRECCIÓN: Usar el campo correcto para tipo de bebida
+				tipoBebidaSelect.value = data.tipoBebida;
+				tipoBebidaContainer.style.display = 'block';
+				tipoComidaOculto.disabled = true;
+				tipoBebidaSelect.disabled = false;
+			}
+
+			// Inserta el ID oculto para edición
+			const inputId = document.createElement('input');
+			inputId.type = 'hidden';
+			inputId.name = 'id';
+			inputId.id = 'idOculto';
+			inputId.value = id;
+			form.appendChild(inputId);
+		}
+	</script>
+</body>
+</html>

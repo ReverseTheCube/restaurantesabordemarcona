@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Empleado - Sistema de Restaurante</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Mantén tus estilos actuales */
+        body { background-color: #f8f9fa; padding-top: 2rem; }
+        .card { border-radius: 15px; box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1); }
+        .card-header { background-color: #5cb85c; color: white; border-radius: 15px 15px 0 0 !important; }
+        .btn-registro { background-color: #5cb85c; border: none; padding: 10px 20px; }
+        .btn-registro:hover { background-color: #4cae4c; }
+        .form-control:focus { border-color: #5cb85c; box-shadow: 0 0 0 0.25rem rgba(92, 184, 92, 0.25); }
+        .rol-badge { background-color: #e9ecef; color: #6c757d; padding: 0.5rem 1rem; border-radius: 0.375rem; font-weight: 500; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <h3>Registro de Nuevo Empleado</h3>
+                    </div>
+                    <div class="card-body">
+                        <!-- Mensajes de éxito/error (ahora con JavaScript) -->
+                        <div id="success-message" class="alert alert-success" style="display: none;"></div>
+                        <div id="error-message" class="alert alert-danger" style="display: none;"></div>
+                        
+                        <form action="/empleados/registrar" method="post" id="formRegistro">
+                            <!-- Información del Rol -->
+                            <div class="mb-4 text-center">
+                                <h5 class="mb-2 text-primary">Registrar como:</h5>
+                                <div class="rol-badge">
+                                    <i class="fas fa-user-tie"></i> EMPLEADO
+                                </div>
+                                <small class="text-muted d-block mt-2">El rol se asigna automáticamente</small>
+                            </div>
+                            
+                            <!-- Credenciales de Acceso -->
+                            <h5 class="mb-3 text-primary">Credenciales de Acceso</h5>
+                            
+                            <div class="mb-3">
+                                <label for="nombreUsuario" class="form-label">Nombre de Usuario *</label>
+                                <input type="text" class="form-control" id="nombreUsuario" name="nombreUsuario" required>
+                                <small class="text-muted">Este será tu usuario para ingresar al sistema</small>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="contrasena" class="form-label">Contraseña *</label>
+                                <input type="password" class="form-control" id="contrasena" name="contrasena" required>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="confirmarContrasena" class="form-label">Confirmar Contraseña *</label>
+                                <input type="password" class="form-control" id="confirmarContrasena" name="confirmarContrasena" required>
+                            </div>
+                            
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-registro btn-lg text-white">
+                                    <i class="fas fa-user-plus"></i> Registrar Empleado
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Manejo de mensajes de error/success desde la URL
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const success = urlParams.get('success');
+            const error = urlParams.get('error');
+            
+            if (success) {
+                document.getElementById('success-message').style.display = 'block';
+                document.getElementById('success-message').textContent = success;
+            }
+            
+            if (error) {
+                document.getElementById('error-message').style.display = 'block';
+                document.getElementById('error-message').textContent = error;
+            }
+            
+            // Validación de contraseñas coincidentes
+            document.getElementById('formRegistro').addEventListener('submit', function(event) {
+                const contrasena = document.getElementById('contrasena').value;
+                const confirmarContrasena = document.getElementById('confirmarContrasena').value;
+                
+                if (contrasena !== confirmarContrasena) {
+                    event.preventDefault();
+                    document.getElementById('error-message').style.display = 'block';
+                    document.getElementById('error-message').textContent = 'Las contraseñas no coinciden';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

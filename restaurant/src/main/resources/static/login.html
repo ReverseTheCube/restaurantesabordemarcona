@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+<meta charset="UTF-8">
+<title>Login - El sabor de Marcona</title>
+<link rel="stylesheet" href="CSS/stylelogin.css">
+</head>
+
+<body>
+	<div class="container">
+		<div class="logo">
+			<img src="img/logorestaurant.jpeg" alt="Logo El sabor de Marcona">
+			<p>
+				El sabor de <br> <strong>Marcona</strong>
+			</p>
+		</div>
+
+		<div class="login-box">
+			<h2>BIENVENIDO</h2>
+			<label for="usuario">USUARIO</label> <input type="text" id="usuario"
+				placeholder="Ingrese su usuario"> <label for="contrasena">CONTRASEÑA</label>
+			<input type="password" id="contrasena"
+				placeholder="Ingrese su contraseña">
+
+			<button id="botonIngresar">INGRESAR</button>
+		</div>
+	</div>
+	<script>
+		const botonIngresar = document.getElementById('botonIngresar');
+
+        botonIngresar.addEventListener('click', async function() {
+            const nombreUsuario = document.getElementById('usuario').value;
+            const contrasena = document.getElementById('contrasena').value;
+
+            if (!nombreUsuario || !contrasena) {
+                alert('Por favor, ingrese su usuario y contraseña.');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        nombreUsuario: nombreUsuario,
+                        contrasena: contrasena
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    // Si la respuesta no es exitosa, muestra el mensaje del servidor
+                    throw new Error(data.message || 'Credenciales incorrectas');
+                }
+
+                // --- ESTA ES LA CORRECCIÓN MÁS IMPORTANTE ---
+                // Guardamos todos los datos necesarios en sessionStorage
+                console.log("Login exitoso. Guardando datos en sessionStorage:", data);
+                sessionStorage.setItem('usuarioId', data.id);
+                sessionStorage.setItem('nombreUsuario', data.nombreUsuario);
+                sessionStorage.setItem('rolUsuario', data.rol);
+
+                // Redirigir según el rol
+                if (data.rol === 'ADMIN') {
+                    window.location.href = 'admin.html';
+                } else if (data.rol === 'USER' || data.rol === 'EMPLOYED') { // Aceptamos ambos roles para el panel principal
+                    window.location.href = 'main.html';
+                } else {
+                    alert('Rol no reconocido: ' + data.rol);
+                }
+
+            } catch (error) {
+                console.error('Error al iniciar sesión:', error);
+                alert(error.message);
+            }
+        });
+	</script>
+
+
+</body>
+
+</html>

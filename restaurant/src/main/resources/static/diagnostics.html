@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Diagnóstico del Sistema</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <h1>Página de Diagnóstico</h1>
+    <p>Usa estos botones para verificar el estado de los componentes del sistema.</p>
+    <button id="check-pedidos-btn" class="btn btn-primary">Verificar Conexión de Pedidos</button>
+    <hr>
+    <div id="resultado" class="mt-4 p-3 border bg-light">
+        Esperando diagnóstico...
+    </div>
+</div>
+
+<script>
+    document.getElementById('check-pedidos-btn').addEventListener('click', async () => {
+        const resultadoDiv = document.getElementById('resultado');
+        resultadoDiv.innerHTML = 'Ejecutando verificación...';
+        const url = '/api/diagnostics/check-pedidos'; // URL correcta
+
+        try {
+            const response = await fetch(url);
+            const data = await response.text();
+
+            // --- MEJORA: Manejo específico para errores como 404 ---
+            if (!response.ok) {
+                resultadoDiv.style.borderColor = 'red';
+                if (response.status === 404) {
+                     resultadoDiv.innerHTML = `
+                        <h3 style='color: red;'>Error 404: No Encontrado</h3>
+                        <p>El servidor está funcionando, pero no pudo encontrar el recurso en la URL:</p>
+                        <code>${url}</code>
+                        <hr>
+                        <p><strong>Sugerencia:</strong> Revisa la anotación <strong>@RequestMapping</strong> en tu <strong>DiagnosticController.java</strong>. Asegúrate de que no tenga un '/api' duplicado.</p>
+                     `;
+                } else {
+                    // Para otros errores del servidor (como 500)
+                    resultadoDiv.innerHTML = data;
+                }
+                return;
+            }
+
+            // Si todo está OK
+            resultadoDiv.innerHTML = data;
+            resultadoDiv.style.borderColor = 'green';
+
+        } catch (error) {
+            // Para errores de conexión (servidor caído)
+            resultadoDiv.innerHTML = '<h2>Error de Conexión</h2><p>No se pudo contactar al servidor. ¿Está funcionando?</p>';
+            resultadoDiv.style.borderColor = 'red';
+        }
+    });
+</script>
+</body>
+</html>

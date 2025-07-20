@@ -1,0 +1,57 @@
+@charset "UTF-8";
+body {
+  margin: 0;
+  padding: 40px;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(to right, #4ca1af 40%, #dcdcdc 40%);
+}
+
+.volver {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+}
+
+.boton-volver {
+  background-color: #e74c3c;
+  color: white;
+  font-size: 32px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 50px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.boton-volver:hover {
+  background-color: #c0392b;
+}
+
+.categoria {
+  background-color: white;
+  margin: 25px auto;
+  width: 80%;
+  max-width: 500px;
+  height: 100px;
+  border-radius: 50px;
+  display: flex;
+  align-items: center;
+  box-shadow: 5px 5px 10px rgba(0,0,0,0.2);
+  overflow: hidden;
+}
+
+.categoria img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 20px;
+}
+
+.categoria span {
+  font-size: 24px;
+  font-family: 'Brush Script MT', cursive;
+}

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro de Compras</title>
+    <link rel="stylesheet" href="mainstyle.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+    
+    
+    
+    
+        .detalle-compra {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+        }
+        .btn-eliminar {
+            background-color: #dc3545;
+            color: white;
+        }
+        #totalCompra {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        .alert-success {
+            color: #155724;
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1 class="text-center my-4">Gestión de Insumos</h1>
+
+    <!-- Mensajes -->
+    <div th:if="${success}" class="alert-success" th:text="${success}"></div>
+    <div th:if="${error}" class="alert-error" th:text="${error}"></div>
+
+    <!-- Formulario de creación -->
+    <form th:action="@{/inventario/agregar}" method="post" class="mb-4">
+        <div class="row">
+            <div class="col-md-6">
+                <input name="nombre" type="text" class="form-control" placeholder="Nombre del Insumo" required>
+            </div>
+            <div class="col-md-3">
+                <input name="stock" type="number" class="form-control" placeholder="Stock Inicial" min="0" required>
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-success w-100">Agregar Insumo</button>
+            </div>
+        </div>
+    </form>
+
+    <!-- Tabla de insumos -->
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Stock</th>
+                <th>Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="insumo : ${insumos}">
+                <td th:text="${insumo.idInsumo}"></td>
+                <td th:text="${insumo.nombreInsumo}"></td>
+                <td th:text="${insumo.stock}"></td>
+                <td>
+                    <form th:action="@{/inventario/eliminar}" method="post" th:object="${insumo}">
+                        <input type="hidden" name="id" th:value="${insumo.idInsumo}">
+                        <button class="btn btn-danger btn-sm" type="submit">Eliminar</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="text-center mt-4">
+        <a th:href="@{/admin.html}" class="btn btn-secondary">Volver al Menú</a>
+    </div>
+</div>
+</body>

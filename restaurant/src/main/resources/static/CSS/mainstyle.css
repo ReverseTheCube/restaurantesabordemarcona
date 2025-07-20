@@ -1,0 +1,67 @@
+@charset "UTF-8";
+ body {
+      background: linear-gradient(to right, #004d40, #66bb6a);
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    .panel {
+      background-color: #b71c1c;
+      border-radius: 15px;
+      padding: 30px;
+      width: 300px;
+      height: auto;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .panel .btn-custom {
+      background: linear-gradient(to right, #dce775, #00e676);
+      border: none;
+      border-radius: 15px;
+      color: #000;
+      font-size: 1.1rem;
+      font-weight: 500;
+      padding: 10px;
+    }
+
+    .footer-buttons {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .btn-support {
+      background-color: #757575;
+      color: white;
+      border-radius: 10px;
+      padding: 8px 16px;
+    }
+
+    .btn-logout {
+      background-color: #ef5350;
+      color: white;
+      border-radius: 10px;
+      padding: 8px 16px;
+    }
+
+	  .logo {
+	  width: 100px;
+	  height: 100px;
+	  border-radius: 50%;
+	  object-fit: cover;
+	  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+	}
+    
+
+    .container-panel {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+    }
+    

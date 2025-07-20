@@ -1,0 +1,88 @@
+@charset "UTF-8";
+    body {
+      background: linear-gradient(to right, #b3c2b9, #6db8a2);
+      font-family: 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      margin: 0;
+      padding: 2rem;
+      position: relative;
+    }
+
+    .pedido-item {
+      background-color: white;
+      border-radius: 25px;
+      padding: 0.6rem 1.2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      font-size: 1rem;
+      font-weight: 500;
+    }
+
+    .precio {
+      font-weight: bold;
+      color: #333;
+    }
+
+    .boton-volver {
+      background-color: #e74c3c;
+      color: white;
+      width: 55px;
+      height: 55px;
+      border-radius: 50%;
+      font-size: 1.5rem;
+      box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+      cursor: pointer;
+    }
+
+    .btn-icon {
+      width: 55px;
+      height: 55px;
+      border-radius: 50%;
+      background-color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.8rem;
+      box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2);
+      cursor: pointer;
+    }
+
+    .btn-print {
+      width: 50px;
+      height: 50px;
+      border-radius: 10px;
+      font-size: 1.6rem;
+    }
+
+    .right-controls {
+      position: absolute;
+      top: 50%;
+      right: 30px;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      align-items: center;
+    }
+
+    .contenedor {
+      width: 75%;
+    }
+
+    @media screen and (max-width: 768px) {
+      .contenedor {
+        width: 100%;
+      }
+
+      .right-controls {
+        position: static;
+        margin-top: 2rem;
+        transform: none;
+        flex-direction: row;
+        justify-content: center;
+      }
+    }
+ 

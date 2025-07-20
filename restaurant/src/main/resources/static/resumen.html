@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Resumen del Pedido</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Estilos para mejorar la apariencia */
+        body { background-color: #f8f9fa; }
+        .container { max-width: 900px; background-color: white; padding: 2rem; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-top: 2rem; }
+        .total-section { text-align: right; font-size: 1.5rem; font-weight: bold; color: #198754; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 2px solid #dee2e6; }
+        .btn-generar { font-size: 1.1rem; padding: 0.75rem 1.5rem; }
+        .table thead { background-color: #e9ecef; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2 class="text-center my-4">Resumen del Pedido</h2>
+
+    <!-- Selector de Cliente y Usuario -->
+    <div class="mb-4">
+        <label for="clienteSelect" class="form-label fw-bold fs-5">Seleccionar Cliente:</label>
+        <div id="clienteErrorAlert" class="alert alert-danger d-none" role="alert"></div>
+        <select class="form-select form-select-lg" id="clienteSelect" aria-label="Selector de cliente">
+            <option selected>Cargando clientes...</option>
+        </select>
+    </div>
+    <div class="mb-4">
+        <label class="form-label fw-bold fs-5">Pedido registrado por:</label>
+        <div id="usuarioErrorAlert" class="alert alert-warning d-none" role="alert">
+            No se ha detectado un usuario. Por favor, <a href="login.html">inicie sesión</a> para poder guardar pedidos.
+        </div>
+        <div id="usuarioInfo" class="alert alert-info">
+            Cargando información del usuario...
+        </div>
+    </div>
+
+    <!-- Tablas de Resumen Actualizadas -->
+    <div class="table-responsive">
+        <h5>Platos y Entradas</h5>
+        <table class="table table-hover align-middle">
+            <thead>
+            <tr>
+                <th>Item</th>
+                <th>Cantidad</th>
+                <th>Precio Unitario</th>
+                <th>Subtotal</th>
+                <th class="text-center">Acciones</th>
+            </tr>
+            </thead>
+            <tbody id="detallesComidas"></tbody>
+        </table>
+
+        <h5 class="mt-4">Bebidas</h5>
+        <table class="table table-hover align-middle">
+            <thead>
+            <tr>
+                <th>Bebida</th>
+                <th>Cantidad</th>
+                <th>Precio Unitario</th>
+                <th>Subtotal</th>
+                <th class="text-center">Acciones</th>
+            </tr>
+            </thead>
+            <tbody id="detallesBebidas"></tbody>
+        </table>
+    </div>
+
+    <!-- Total y Botones -->
+    <div id="total-container" class="total-section">
+        <span>TOTAL:</span>
+        <span id="total-pedido">S/. 0.00</span>
+    </div>
+    <div class="d-flex justify-content-between mt-5">
+        <a href="platos.html" class="btn btn-secondary">Volver al Menú</a>
+        <button class="btn btn-success btn-lg btn-generar" id="btn-generar-pedido">
+            Finalizar y Guardar Pedido
+        </button>
+    </div>
+    <div id="pedidoErrorContainer" class="alert alert-danger mt-4 d-none" role="alert">
+        <h4 class="alert-heading">¡Error al Guardar!</h4>
+        <p id="pedidoErrorMessage"></p>
+        <hr>
+        <p class="mb-0"><strong>Detalles Técnicos:</strong></p>
+        <pre id="pedidoErrorDetails" style="white-space: pre-wrap; word-wrap: break-word;"></pre>
+    </div>
+</div>
+
+<script>
+    // Objeto global para mantener el estado del pedido cargado desde localStorage
+    let pedidoCompleto = {};
+
+    /**
+     * Carga la información del usuario desde sessionStorage y ajusta la UI.
+     */
+    function cargarUsuarioLogueado() {
+        // ==================== INICIO DEL LOG DE DEPURACIÓN ====================
+        console.log("--- Depurando sesión de usuario ---");
+        console.log("Intentando obtener 'usuarioId' de sessionStorage...");
+        const usuarioId = sessionStorage.getItem('usuarioId');
+        console.log(`Valor de 'usuarioId': ${usuarioId}`); // Muestra el valor (o null)
+
+        console.log("Intentando obtener 'nombreUsuario' de sessionStorage...");
+        const nombreUsuario = sessionStorage.getItem('nombreUsuario');
+        console.log(`Valor de 'nombreUsuario': ${nombreUsuario}`); // Muestra el valor (o null)
+        // ===================== FIN DEL LOG DE DEPURACIÓN ======================
+
+        const btnGenerar = document.getElementById('btn-generar-pedido');
+        const usuarioInfoDiv = document.getElementById('usuarioInfo');
+        const usuarioErrorAlert = document.getElementById('usuarioErrorAlert');
+
+        if (usuarioId && nombreUsuario) {
+            console.log("Resultado: Usuario detectado. Mostrando información.");
+            usuarioInfoDiv.textContent = `Empleado: ${nombreUsuario} (ID: ${usuarioId})`;
+            btnGenerar.disabled = false;
+            usuarioErrorAlert.classList.add('d-none');
+            usuarioInfoDiv.classList.remove('d-none'); // Asegurarse de que sea visible
+        } else {
+            console.log("Resultado: Usuario NO detectado. Mostrando alerta de error.");
+            usuarioInfoDiv.classList.add('d-none');
+            usuarioErrorAlert.classList.remove('d-none');
+            btnGenerar.disabled = true;
+        }
+        console.log("--- Fin de la depuración ---");
+    }
+
+    /**
+     * Carga la lista de clientes desde el backend y los muestra en un select.
+     */
+    async function cargarClientes() {
+        const select = document.getElementById('clienteSelect');
+        const errorAlert = document.getElementById('clienteErrorAlert');
+        try {
+            const response = await fetch('/clientes/api/buscar/todos');
+            if (!response.ok) throw new Error(`Error del servidor: ${response.status}`);
+
+            const clientes = await response.json();
+            select.innerHTML = '<option value="">-- Seleccione un cliente --</option>';
+            errorAlert.classList.add('d-none');
+
+            if (clientes.length === 0) {
+                select.innerHTML = '<option value="">No hay clientes registrados. Por favor, registre uno.</option>';
+                select.disabled = true;
+                return;
+            }
+
+            clientes.forEach(cliente => {
+                const option = document.createElement('option');
+                option.value = cliente.idCliente;
+                option.textContent = `${cliente.nombreCliente} (${formatearTipoCliente(cliente.tipoCliente)})`;
+                select.appendChild(option);
+            });
+
+        } catch (error) {
+            console.error('Error al cargar clientes:', error);
+            errorAlert.textContent = `Error Crítico al cargar clientes: ${error.message}. Verifique que el backend esté funcionando.`;
+            errorAlert.classList.remove('d-none');
+            select.classList.add('d-none');
+        }
+    }
+
+    /**
+     * Lee el pedido desde localStorage y lo muestra en las tablas correspondientes.
+     */
+    function mostrarResumen() {
+        const data = localStorage.getItem("pedidoSeleccion");
+        if (!data) {
+            document.getElementById("total-container").innerHTML = "<p>El carrito está vacío.</p>";
+            document.getElementById('btn-generar-pedido').disabled = true; // Deshabilitar si no hay nada
+            return;
+        }
+
+        try {
+            pedidoCompleto = JSON.parse(data);
+            const tbodyComidas = document.getElementById("detallesComidas");
+            const tbodyBebidas = document.getElementById("detallesBebidas");
+            tbodyComidas.innerHTML = "";
+            tbodyBebidas.innerHTML = "";
+            let totalGeneral = 0;
+
+            const renderizarFila = (tbody, item, nombre, categoria) => {
+                if (item.cantidad > 0) {
+                    const subtotal = item.cantidad * item.precio;
+                    totalGeneral += subtotal;
+                    const fila = document.createElement('tr');
+                    fila.innerHTML = `
+                        <td>${nombre}</td>
+                        <td>${item.cantidad}</td>
+                        <td>S/. ${item.precio.toFixed(2)}</td>
+                        <td>S/. ${subtotal.toFixed(2)}</td>
+                        <td class="text-center">
+                            <button class="btn btn-danger btn-sm" onclick="eliminarItem('${categoria}', '${nombre.replace(/'/g, "\\'")}')">Quitar</button>
+                        </td>
+                    `;
+                    tbody.appendChild(fila);
+                }
+            };
+
+            ['entradas', 'platos'].forEach(cat => {
+                for (const nombre in (pedidoCompleto[cat] || {})) {
+                    renderizarFila(tbodyComidas, pedidoCompleto[cat][nombre], nombre, cat);
+                }
+            });
+
+            for (const nombre in (pedidoCompleto.bebidas || {})) {
+                renderizarFila(tbodyBebidas, pedidoCompleto.bebidas[nombre], nombre, 'bebidas');
+            }
+
+            document.getElementById("total-pedido").textContent = `S/. ${totalGeneral.toFixed(2)}`;
+
+        } catch (e) {
+            console.error("Error al procesar los datos del pedido:", e);
+            document.getElementById("pedidoErrorContainer").classList.remove('d-none');
+            document.getElementById("pedidoErrorMessage").textContent = "Hubo un error al leer los datos del carrito. Podrían estar corruptos.";
+        }
+    }
+
+    /**
+     * Elimina un item del pedido y actualiza tanto localStorage como la vista.
+     */
+    function eliminarItem(categoria, nombre) {
+        if (pedidoCompleto[categoria] && pedidoCompleto[categoria][nombre]) {
+            delete pedidoCompleto[categoria][nombre];
+            localStorage.setItem("pedidoSeleccion", JSON.stringify(pedidoCompleto));
+            mostrarResumen(); // Vuelve a dibujar toda la tabla
+        }
+    }
+
+    /**
+     * Recopila los datos, los formatea para el backend y los envía para crear el pedido.
+     */
+    async function generarPedido() {
+        document.getElementById('pedidoErrorContainer').classList.add('d-none');
+
+        const clienteId = document.getElementById('clienteSelect').value;
+        const usuarioId = sessionStorage.getItem('usuarioId');
+
+        if (!usuarioId) {
+            alert("Error de sesión: No se ha detectado un usuario. Por favor, inicie sesión de nuevo.");
+            return;
+        }
+        if (!clienteId) {
+            alert("Por favor, seleccione un cliente para el pedido.");
+            return;
+        }
+
+        const detallesComida = [];
+        const detallesBebida = [];
+
+        ['entradas', 'platos'].forEach(categoria => {
+            for (const nombre in (pedidoCompleto[categoria] || {})) {
+                const item = pedidoCompleto[categoria][nombre];
+                if (item.cantidad > 0 && item.tipo === 'comida') {
+                    detallesComida.push({ comidaId: item.id, cantidad: item.cantidad });
+                }
+            }
+        });
+
+        for (const nombre in (pedidoCompleto.bebidas || {})) {
+            const item = pedidoCompleto.bebidas[nombre];
+            if (item.cantidad > 0 && item.tipo === 'bebida') {
+                detallesBebida.push({ bebidaId: item.id, cantidad: item.cantidad });
+            }
+        }
+
+        if (detallesComida.length === 0 && detallesBebida.length === 0) {
+            alert("El carrito está vacío. Agregue productos antes de continuar.");
+            return;
+        }
+
+        // Este es el formato de datos que se enviará al backend (PedidoRequest)
+        const pedidoParaGuardar = {
+            clienteId: parseInt(clienteId),
+            usuarioId: parseInt(usuarioId),
+            detallesComida: detallesComida,
+            detallesBebida: detallesBebida
+        };
+
+        const btnGenerar = document.getElementById('btn-generar-pedido');
+        btnGenerar.disabled = true;
+        btnGenerar.textContent = 'Guardando...';
+
+        try {
+            const response = await fetch('/api/pedidos', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(pedidoParaGuardar)
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({ message: 'No se pudo obtener detalle del error.' }));
+                throw new Error(errorData.message || `Error del servidor: ${response.status}`);
+            }
+
+            const result = await response.json();
+
+            sessionStorage.setItem('ultimoPedidoResumen', JSON.stringify(pedidoCompleto));
+            sessionStorage.setItem('ultimoPedidoInfo', JSON.stringify(result));
+
+            localStorage.removeItem("pedidoSeleccion");
+            window.location.href = `ascii.html`;
+
+        } catch (error) {
+            console.error("Error al procesar el pedido:", error);
+            const errorContainer = document.getElementById('pedidoErrorContainer');
+            document.getElementById('pedidoErrorMessage').textContent = 'No se pudo guardar el pedido. Revise los detalles.';
+            document.getElementById('pedidoErrorDetails').textContent = error.message;
+            errorContainer.classList.remove('d-none');
+
+            btnGenerar.disabled = false;
+            btnGenerar.textContent = 'Finalizar y Guardar Pedido';
+        }
+    }
+
+    // Asignar la función al botón
+    document.getElementById('btn-generar-pedido').addEventListener('click', generarPedido);
+
+    // Funciones que se ejecutan al cargar la página
+    document.addEventListener('DOMContentLoaded', () => {
+        cargarUsuarioLogueado();
+        cargarClientes();
+        mostrarResumen();
+    });
+
+    /**
+     * Formatea el tipo de cliente para una mejor visualización (ej. 'PARTICULAR' -> 'Particular').
+     */
+    function formatearTipoCliente(tipo) {
+        if (!tipo) return 'N/A';
+        const tipoLower = tipo.toLowerCase();
+        return tipoLower.charAt(0).toUpperCase() + tipoLower.slice(1);
+    }
+</script>
+</body>
+</html>
