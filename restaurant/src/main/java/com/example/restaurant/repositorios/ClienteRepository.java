@@ -6,7 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,7 +37,8 @@ public interface ClienteRepository extends JpaRepository<Cliente, Integer> {
            "AND (UPPER(CONCAT(c.nombres, ' ', c.apellidos)) LIKE UPPER(CONCAT('%', :termino, '%')) " +
            "OR c.dni LIKE %:termino%)")
     List<Cliente> buscarPensionadosPorNombreODni(@Param("termino") String termino);
-    
+    @Query("SELECT c FROM Cliente c WHERE c.dni LIKE %:termino% OR UPPER(c.nombreCliente) LIKE UPPER(CONCAT('%', :termino, '%')) OR UPPER(CONCAT(c.nombres, ' ', c.apellidos)) LIKE UPPER(CONCAT('%', :termino, '%'))")
+    Page<Cliente> findByTermino(@Param("termino") String termino, Pageable pageable);
     // Buscar todos los clientes por término general (nombre, DNI, etc.)
     @Query("SELECT c FROM Cliente c " +
            "WHERE UPPER(c.nombreCliente) LIKE UPPER(CONCAT('%', :termino, '%')) " +

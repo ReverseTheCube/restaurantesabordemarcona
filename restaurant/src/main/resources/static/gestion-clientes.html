@@ -48,158 +48,157 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <a class="btn-back" href="main.html">← Regresar al Panel</a>
-        <div class="header"><h1>Gestión de Clientes y Pensiones</h1></div>
-
-        <div class="tabs">
-            <div class="tab active" onclick="switchTab('clientes', event)">👥 Gestión de Clientes</div>
-            <div class="tab" onclick="switchTab('pensiones', event)">🏛️ Gestión de Pensiones</div>
-        </div>
-
-        <div id="tab-clientes" class="tab-content active">
-            <div class="form-container">
-                <h2>Registro de Cliente</h2><div id="alertContainer1"></div>
-                <form id="clienteForm">
-                    <div class="form-group"><label for="tipoCliente">Tipo de Cliente *</label><select id="tipoCliente" onchange="toggleClienteFields()"><option value="">Seleccione...</option><option value="PARTICULAR">Particular</option><option value="PENSION">Pensionado</option></select></div>
-                    <div id="camposParticular" class="dynamic-fields"><div class="form-group"><label for="nombreParticular">Nombre Completo *</label><input type="text" id="nombreParticular" placeholder="Ingrese el nombre completo"></div></div>
-                    <div id="camposPensionado" class="dynamic-fields"><div class="form-grid"><div class="form-group"><label for="dniPensionado">DNI *</label><input type="text" id="dniPensionado" placeholder="12345678" maxlength="8"></div><div class="form-group"><label for="nombresPensionado">Nombres *</label><input type="text" id="nombresPensionado" placeholder="Juan Carlos"></div></div><div class="form-group"><label for="apellidosPensionado">Apellidos *</label><input type="text" id="apellidosPensionado" placeholder="García López"></div></div>
-                    <button type="button" class="btn" onclick="registrarCliente()">Registrar</button><button type="button" class="btn btn-secondary" onclick="limpiarFormularioCliente()">Limpiar</button>
-                </form>
-            </div>
-            <div class="list-section">
-                <h2>Lista de Clientes</h2><div id="clientesLista"><div class="loading">Cargando...</div></div>
-                <nav><ul class="pagination justify-content-center" id="paginacionClientes"></ul></nav>
-            </div>
-        </div>
-
-        <div id="tab-pensiones" class="tab-content">
-            <div class="form-container">
-                <h3>🏢 Registro de Empresa</h3><div id="alertContainer2"></div>
-                <form id="empresaForm">
-                    <div class="form-grid"><div class="form-group"><label for="rucEmpresa">RUC *</label><input type="text" id="rucEmpresa" placeholder="20123456789" maxlength="11"></div><div class="form-group"><label for="razonSocial">Razón Social *</label><input type="text" id="razonSocial" placeholder="EMPRESA SAC"></div></div>
-                    <button type="button" class="btn" onclick="registrarEmpresa()">Registrar</button><button type="button" class="btn btn-secondary" onclick="limpiarFormularioEmpresa()">Limpiar</button>
-                </form>
-            </div>
-            <div class="list-section">
-                <h4>Empresas Registradas</h4><div id="empresasLista"><div class="loading">Cargando...</div></div>
-                <nav><ul class="pagination justify-content-center" id="paginacionEmpresas"></ul></nav>
-            </div>
-            <div class="form-container" style="background: #e8f4fd;">
-                <h3>💼 Registro de Pensión</h3>
-                <form id="pensionForm">
-                    <div class="form-grid"><div class="form-group"><label for="empresaPension">Empresa *</label><select id="empresaPension"></select></div><div class="form-group"><label for="clientePension">Cliente Pensionado *</label><select id="clientePension"></select></div></div>
-                    <div class="form-grid"><div class="form-group"><label for="montoMensual">Monto Mensual (S/) *</label><input type="number" id="montoMensual" step="0.01" min="0" placeholder="150.00"></div><div class="form-group"><label for="fechaInicio">Fecha de Inicio *</label><input type="date" id="fechaInicio"></div></div>
-                    <div class="form-group"><label for="fechaFin">Fecha de Fin *</label><input type="date" id="fechaFin"></div>
-                    <button type="button" class="btn" id="btnRegistrarPension" onclick="registrarPension()">Registrar</button><button type="button" class="btn btn-secondary" onclick="limpiarFormularioPension()">Limpiar</button>
-                </form>
-            </div>
-            <div class="list-section">
-                <h2>Pensiones Registradas</h2><div id="pensionesList"><div class="loading">Cargando...</div></div>
-                <nav><ul class="pagination justify-content-center" id="paginacionPensiones"></ul></nav>
-            </div>
-        </div>
-    </div>
 	<div class="container">
-	        </div>
+	    <a class="btn-back" href="main.html">← Regresar al Panel</a>
+	    <div class="header"><h1>Gestión de Clientes y Pensiones</h1></div>
 
-	    <div id="pensionesAsociadasModal" class="modal">
-	        <div class="modal-content">
-	            <span class="close-button" onclick="closeModal('pensionesAsociadasModal')">&times;</span>
-	            <h2 id="modalPensionesTitulo">Pensiones Asociadas</h2>
-	            <div id="modalPensionesContenido">
-	                </div>
+	    <div class="tabs">
+	        <div class="tab active" onclick="switchTab('clientes', event)">👥 Clientes</div>
+	        <div class="tab" onclick="switchTab('pensiones', event)">🏛️ Empresas y Pensiones</div>
+	    </div>
+
+	    <div id="tab-clientes" class="tab-content active">
+	        <div class="form-container">
+	            <h2>Registro de Cliente</h2><div id="alertContainer1"></div>
+	            <form id="clienteForm">
+	                <div class="form-group"><label for="tipoCliente">Tipo de Cliente *</label><select id="tipoCliente" onchange="toggleClienteFields()"><option value="">Seleccione...</option><option value="PARTICULAR">Particular</option><option value="PENSION">Pensionado</option></select></div>
+	                <div id="camposParticular" class="dynamic-fields"><div class="form-group"><label for="nombreParticular">Nombre Completo *</label><input type="text" id="nombreParticular" placeholder="Ingrese el nombre completo"></div></div>
+	                <div id="camposPensionado" class="dynamic-fields"><div class="form-grid"><div class="form-group"><label for="dniPensionado">DNI *</label><input type="text" id="dniPensionado" placeholder="12345678" maxlength="8"></div><div class="form-group"><label for="nombresPensionado">Nombres *</label><input type="text" id="nombresPensionado" placeholder="Juan Carlos"></div></div><div class="form-group"><label for="apellidosPensionado">Apellidos *</label><input type="text" id="apellidosPensionado" placeholder="García López"></div></div>
+	                <button type="button" class="btn" onclick="registrarCliente()">Registrar</button><button type="button" class="btn btn-secondary" onclick="limpiarFormularioCliente()">Limpiar</button>
+	            </form>
+	        </div>
+	        <div class="list-section">
+	            <h2>Lista de Clientes</h2>
+	            <div class="form-group"><input type="text" id="buscadorClientes" class="form-control" oninput="buscarDatos('clientes')" placeholder="Buscar por Nombre o DNI..."></div>
+	            <div id="clientesLista"><div class="loading">Cargando...</div></div>
+	            <nav><ul class="pagination justify-content-center" id="paginacionClientes"></ul></nav>
 	        </div>
 	    </div>
-    
-    <div id="editClienteModal" class="modal"><div class="modal-content"><span class="close-button" onclick="closeModal('editClienteModal')">&times;</span><h2>Editar Cliente</h2><form id="editClienteForm"><input type="hidden" id="editClienteId"><div id="editCamposParticular" class="dynamic-fields"><div class="form-group"><label for="editNombreParticular">Nombre Completo *</label><input type="text" id="editNombreParticular"></div></div><div id="editCamposPensionado" class="dynamic-fields"><div class="form-group"><label for="editDniPensionado">DNI *</label><input type="text" id="editDniPensionado" maxlength="8"></div><div class="form-group"><label for="editNombresPensionado">Nombres *</label><input type="text" id="editNombresPensionado"></div><div class="form-group"><label for="editApellidosPensionado">Apellidos *</label><input type="text" id="editApellidosPensionado"></div></div><button type="button" class="btn" id="btnGuardarCliente">Guardar Cambios</button></form></div></div>
-    <div id="editEmpresaModal" class="modal"><div class="modal-content"><span class="close-button" onclick="closeModal('editEmpresaModal')">&times;</span><h2>Editar Empresa</h2><form id="editEmpresaForm"><input type="hidden" id="editEmpresaId"><div class="form-group"><label>RUC (No editable)</label><input type="text" id="editRucEmpresa" disabled></div><div class="form-group"><label for="editRazonSocial">Razón Social *</label><input type="text" id="editRazonSocial" required></div><button type="button" class="btn" id="btnGuardarEmpresa">Guardar Cambios</button></form></div></div>
-    <div id="editPensionModal" class="modal"><div class="modal-content"><span class="close-button" onclick="closeModal('editPensionModal')">&times;</span><h2>Editar Pensión</h2><form id="editPensionForm"><input type="hidden" id="editPensionId"><div class="form-group"><label>Cliente</label><input type="text" id="editPensionCliente" disabled></div><div class="form-group"><label>Empresa</label><input type="text" id="editPensionEmpresa" disabled></div><div class="form-group"><label for="editMontoMensual">Monto (S/)</label><input type="number" id="editMontoMensual" step="0.01" min="0" required></div><div class="form-group"><label for="editFechaInicio">Inicio</label><input type="date" id="editFechaInicio" required></div><div class="form-group"><label for="editFechaFin">Fin</label><input type="date" id="editFechaFin" required></div><button type="button" class="btn" id="btnGuardarPension">Guardar Cambios</button></form></div></div>
+
+	    <div id="tab-pensiones" class="tab-content">
+	        <div class="form-container">
+	            <h3>🏢 Registro de Empresa</h3><div id="alertContainer2"></div>
+	            <form id="empresaForm">
+	                <div class="form-grid"><div class="form-group"><label for="rucEmpresa">RUC *</label><input type="text" id="rucEmpresa" placeholder="20123456789" maxlength="11"></div><div class="form-group"><label for="razonSocial">Razón Social *</label><input type="text" id="razonSocial" placeholder="EMPRESA SAC"></div></div>
+	                <button type="button" class="btn" onclick="registrarEmpresa()">Registrar</button><button type="button" class="btn btn-secondary" onclick="limpiarFormularioEmpresa()">Limpiar</button>
+	            </form>
+	        </div>
+	        <div class="list-section">
+	            <h4>Empresas Registradas</h4>
+	            <div class="form-group"><input type="text" id="buscadorEmpresas" class="form-control" oninput="buscarDatos('empresas')" placeholder="Buscar por Razón Social o RUC..."></div>
+	            <div id="empresasLista"><div class="loading">Cargando...</div></div>
+	            <nav><ul class="pagination justify-content-center" id="paginacionEmpresas"></ul></nav>
+	        </div>
+	        <div class="form-container" style="background: #e8f4fd;">
+	            <h3>💼 Registro de Pensión</h3>
+	            <form id="pensionForm">
+	                <div class="form-grid"><div class="form-group"><label for="empresaPension">Empresa *</label><select id="empresaPension"></select></div><div class="form-group"><label for="clientePension">Cliente Pensionado *</label><select id="clientePension"></select></div></div>
+	                <div class="form-grid"><div class="form-group"><label for="montoMensual">Monto Mensual (S/) *</label><input type="number" id="montoMensual" step="0.01" min="0" placeholder="150.00"></div><div class="form-group"><label for="fechaInicio">Fecha de Inicio *</label><input type="date" id="fechaInicio"></div></div>
+	                <div class="form-group"><label for="fechaFin">Fecha de Fin *</label><input type="date" id="fechaFin"></div>
+	                <button type="button" class="btn" id="btnRegistrarPension" onclick="registrarPension()">Registrar</button><button type="button" class="btn btn-secondary" onclick="limpiarFormularioPension()">Limpiar</button>
+	            </form>
+	        </div>
+	        <div class="list-section">
+	            <h2>Pensiones Registradas</h2>
+	            <div class="form-group"><input type="text" id="buscadorPensiones" class="form-control" oninput="buscarDatos('pensiones')" placeholder="Buscar por nombre de la Empresa..."></div>
+	            <div id="pensionesList"><div class="loading">Cargando...</div></div>
+	            <nav><ul class="pagination justify-content-center" id="paginacionPensiones"></ul></nav>
+	        </div>
+	    </div>
+	</div>
+
+	<div id="editClienteModal" class="modal"><div class="modal-content"><span class="close-button" onclick="closeModal('editClienteModal')">&times;</span><h2>Editar Cliente</h2><form id="editClienteForm"><input type="hidden" id="editClienteId"><div id="editCamposParticular" class="dynamic-fields"><div class="form-group"><label for="editNombreParticular">Nombre Completo *</label><input type="text" id="editNombreParticular"></div></div><div id="editCamposPensionado" class="dynamic-fields"><div class="form-group"><label for="editDniPensionado">DNI *</label><input type="text" id="editDniPensionado" maxlength="8"></div><div class="form-group"><label for="editNombresPensionado">Nombres *</label><input type="text" id="editNombresPensionado"></div><div class="form-group"><label for="editApellidosPensionado">Apellidos *</label><input type="text" id="editApellidosPensionado"></div></div><button type="button" class="btn" id="btnGuardarCliente">Guardar Cambios</button></form></div></div>
+	<div id="editEmpresaModal" class="modal"><div class="modal-content"><span class="close-button" onclick="closeModal('editEmpresaModal')">&times;</span><h2>Editar Empresa</h2><form id="editEmpresaForm"><input type="hidden" id="editEmpresaId"><div class="form-group"><label>RUC (No editable)</label><input type="text" id="editRucEmpresa" disabled></div><div class="form-group"><label for="editRazonSocial">Razón Social *</label><input type="text" id="editRazonSocial" required></div><button type="button" class="btn" id="btnGuardarEmpresa">Guardar Cambios</button></form></div></div>
+	<div id="editPensionModal" class="modal"><div class="modal-content"><span class="close-button" onclick="closeModal('editPensionModal')">&times;</span><h2>Editar Pensión</h2><form id="editPensionForm"><input type="hidden" id="editPensionId"><div class="form-group"><label>Cliente</label><input type="text" id="editPensionCliente" disabled></div><div class="form-group"><label>Empresa</label><input type="text" id="editPensionEmpresa" disabled></div><div class="form-group"><label for="editMontoMensual">Monto (S/)</label><input type="number" id="editMontoMensual" step="0.01" min="0" required></div><div class="form-group"><label for="editFechaInicio">Inicio</label><input type="date" id="editFechaInicio" required></div><div class="form-group"><label for="editFechaFin">Fin</label><input type="date" id="editFechaFin" required></div><button type="button" class="btn" id="btnGuardarPension">Guardar Cambios</button></form></div></div>
+	<div id="pensionesAsociadasModal" class="modal"><div class="modal-content"><span class="close-button" onclick="closeModal('pensionesAsociadasModal')">&times;</span><h2 id="modalPensionesTitulo">Pensiones Asociadas</h2><div id="modalPensionesContenido"></div></div></div>
+
 
 	<script>
 	    let clientesData = [];
 	    let registrandoPension = false;
+		let timeoutBusqueda = null;
 
-	    document.addEventListener('DOMContentLoaded', () => {
-	        cargarClientes();
-	        document.getElementById('btnGuardarCliente').addEventListener('click', guardarCambiosCliente);
-	        document.getElementById('btnGuardarEmpresa').addEventListener('click', guardarCambiosEmpresa);
-	        document.getElementById('btnGuardarPension').addEventListener('click', guardarCambiosPension);
-	    });
+		document.addEventListener('DOMContentLoaded', () => {
+		    cargarClientes();
+		    document.getElementById('btnGuardarCliente').addEventListener('click', guardarCambiosCliente);
+		    document.getElementById('btnGuardarEmpresa').addEventListener('click', guardarCambiosEmpresa);
+		    document.getElementById('btnGuardarPension').addEventListener('click', guardarCambiosPension);
+		});
 
-	    function switchTab(tabName, event) {
-	        document.querySelectorAll('.tab-content, .tab').forEach(el => el.classList.remove('active'));
-	        document.getElementById(`tab-${tabName}`).classList.add('active');
-	        event.currentTarget.classList.add('active');
-	        if (tabName === 'pensiones') {
-	            cargarEmpresas();
-	            cargarPensiones();
-	            cargarClientesPensionados();
-	            cargarEmpresasParaDropdown();
-	        }
-	    }
+		function switchTab(tabName, event) {
+		    document.querySelectorAll('.tab-content, .tab').forEach(el => el.classList.remove('active'));
+		    document.getElementById(`tab-${tabName}`).classList.add('active');
+		    event.currentTarget.classList.add('active');
+		    if (tabName === 'pensiones') {
+		        cargarEmpresas();
+		        cargarPensiones();
+		        cargarClientesPensionados();
+		        cargarEmpresasParaDropdown();
+		    }
+		}
 
-	    const API_CONFIG = {
-	        clientes: { endpoint: '/clientes/api/buscar/todos', listContainer: 'clientesLista', paginationContainer: 'paginacionClientes', renderFunction: mostrarClientes, loadFunction: 'cargarClientes', sort: 'idCliente,desc' },
-	        empresas: { endpoint: '/empresas/api/listar', listContainer: 'empresasLista', paginationContainer: 'paginacionEmpresas', renderFunction: mostrarEmpresas, loadFunction: 'cargarEmpresas', sort: 'idEmpresa,desc' },
-	        pensiones: { endpoint: '/pensiones/api/listar', listContainer: 'pensionesList', paginationContainer: 'paginacionPensiones', renderFunction: mostrarPensiones, loadFunction: 'cargarPensiones', sort: 'idPension,desc' }
-	    };
+		const API_CONFIG = {
+		    clientes: { endpoint: '/clientes/api/buscar/todos', listContainer: 'clientesLista', paginationContainer: 'paginacionClientes', renderFunction: mostrarClientes, loadFunction: 'cargarClientes' },
+		    empresas: { endpoint: '/empresas/api/listar', listContainer: 'empresasLista', paginationContainer: 'paginacionEmpresas', renderFunction: mostrarEmpresas, loadFunction: 'cargarEmpresas' },
+		    pensiones: { endpoint: '/pensiones/api/listar', listContainer: 'pensionesList', paginationContainer: 'paginacionPensiones', renderFunction: mostrarPensiones, loadFunction: 'cargarPensiones' }
+		};
+		function buscarDatos(tipo) {
+		    clearTimeout(timeoutBusqueda);
+		    timeoutBusqueda = setTimeout(() => {
+		        const termino = document.getElementById(`buscador${capitalize(tipo)}`).value;
+		        window[`cargar${capitalize(tipo)}`](0, API_CONFIG[tipo].size, termino);
+		    }, 300);
+		}
 
-	    async function loadPaginatedData(type, page = 0, size = 5) {
-	        const config = API_CONFIG[type];
-	        const container = document.getElementById(config.listContainer);
-	        container.innerHTML = `<div class="loading">Cargando...</div>`;
-	        try {
-	            const response = await fetch(`${config.endpoint}?page=${page}&size=${size}&sort=${config.sort}`);
-	            if (!response.ok) throw new Error(`Error al cargar ${type}`);
-	            const pageData = await response.json();
-	            if (type === 'clientes') clientesData = pageData.content;
-	            config.renderFunction(pageData.content);
-	            renderizarPaginacion(config.paginationContainer, pageData, config.loadFunction);
-	        } catch (error) {
-	            container.innerHTML = `<p class="text-center text-danger p-3">${error.message}</p>`;
-	        }
-	    }
-
-	    function cargarClientes(page = 0, size = 5) { loadPaginatedData('clientes', page, size); }
-	    function cargarEmpresas(page = 0, size = 3) { loadPaginatedData('empresas', page, size); }
-	    function cargarPensiones(page = 0, size = 4) { loadPaginatedData('pensiones', page, size); }
+		        
+		async function loadPaginatedData(type, page = 0, size = 5, termino = '') {
+		            const config = API_CONFIG[type];
+		            const container = document.getElementById(config.listContainer);
+		            container.innerHTML = `<div class="loading">Cargando...</div>`;
+		            try {
+		                const url = `${config.endpoint}?page=${page}&size=${size}&termino=${encodeURIComponent(termino)}`;
+		                const response = await fetch(url);
+		                if (!response.ok) throw new Error(`Error al cargar ${type}`);
+		                const pageData = await response.json();
+		                if (type === 'clientes') clientesData = pageData.content;
+		                config.renderFunction(pageData.content);
+		                renderizarPaginacion(config.paginationContainer, pageData, config.loadFunction, termino);
+		            } catch (error) {
+		                container.innerHTML = `<p class="text-center text-danger p-3">${error.message}</p>`;
+		            }
+		        }
+		function capitalize(s) {
+				            return s.charAt(0).toUpperCase() + s.slice(1);
+		}
+		function cargarClientes(page = 0, size = 5, termino = '') { loadPaginatedData('clientes', page, size, termino); }
+		function cargarEmpresas(page = 0, size = 3, termino = '') { loadPaginatedData('empresas', page, size, termino); }
+		function cargarPensiones(page = 0, size = 4, termino = '') { loadPaginatedData('pensiones', page, size, termino); }
 
 		function mostrarClientes(clientes) {
-		            const container = document.getElementById('clientesLista');
-		            if (!clientes || clientes.length === 0) { container.innerHTML = '<p class="text-center p-3">No hay clientes para mostrar.</p>'; return; }
-		            container.innerHTML = clientes.map(c => {
-		                const nombre = c.tipoCliente === 'PENSION' ? `${c.nombres || ''} ${c.apellidos || ''}`.trim() : c.nombreCliente;
-		                // ✅ Botón "Ver Pensiones" añadido para clientes PENSION
-		                const botonVerPensiones = c.tipoCliente === 'PENSION' 
-		                    ? `<button class="btn btn-info btn-sm" onclick="verPensionesDeCliente(${c.idCliente}, '${nombre}')">Ver Pensiones</button>` 
-		                    : '';
-		                return `<div class="cliente-item">
-		                            <div class="cliente-info"><h4>${nombre}</h4><p><strong>ID:</strong> ${c.idCliente} | <strong>Tipo:</strong> ${c.tipoCliente}</p></div>
-		                            <div>${botonVerPensiones}<button class="btn btn-secondary btn-sm" onclick="editarCliente(${c.idCliente})">Editar</button><button class="btn btn-danger btn-sm" onclick="eliminarCliente(${c.idCliente}, '${nombre.replace(/'/g, "\\'")}')">Eliminar</button></div>
-		                        </div>`;
-		            }).join('');
+		    const container = document.getElementById('clientesLista');
+		    if (!clientes || clientes.length === 0) { container.innerHTML = '<p class="text-center p-3">No se encontraron clientes.</p>'; return; }
+		    container.innerHTML = clientes.map(c => {
+		        const nombre = c.tipoCliente === 'PENSION' ? `${c.nombres || ''} ${c.apellidos || ''}`.trim() : c.nombreCliente;
+		        const dniInfo = c.tipoCliente === 'PENSION' ? `<p><strong>DNI:</strong> ${c.dni || 'N/A'}</p>` : '';
+		        const botonVer = c.tipoCliente === 'PENSION' ? `<button class="btn btn-info btn-sm" onclick="verPensionesDeCliente(${c.idCliente}, '${nombre.replace(/'/g, "\\'")}')">Pensiones</button>` : '';
+		        return `<div class="cliente-item"><div class="cliente-info"><h4>${nombre}</h4><p><strong>ID:</strong> ${c.idCliente}</p>${dniInfo}</div><div>${botonVer}<button class="btn btn-secondary btn-sm" onclick="editarCliente(${c.idCliente})">Editar</button><button class="btn btn-danger btn-sm" onclick="eliminarCliente(${c.idCliente}, '${nombre.replace(/'/g, "\\'")}')">Eliminar</button></div></div>`;
+		    }).join('');
 		}
 		function mostrarEmpresas(empresas) {
-		            const container = document.getElementById('empresasLista');
-		            if (!empresas || empresas.length === 0) { container.innerHTML = '<p class="text-center p-3">No hay empresas para mostrar.</p>'; return; }
-		            container.innerHTML = empresas.map(e => {
-		                // ✅ Botón "Ver Pensiones" añadido
-		                return `<div class="cliente-item">
-		                            <div class="cliente-info"><h4>${e.razonSocial}</h4><p><strong>RUC:</strong> ${e.ruc}</p></div>
-		                            <div><button class="btn btn-info btn-sm" onclick="verPensionesDeEmpresa(${e.idEmpresa}, '${e.razonSocial.replace(/'/g, "\\'")}')">Ver Pensiones</button><button class="btn btn-secondary btn-sm" onclick="editarEmpresa(${e.idEmpresa})">Editar</button><button class="btn btn-danger btn-sm" onclick="eliminarEmpresa(${e.idEmpresa}, '${e.razonSocial.replace(/'/g, "\\'")}')">Eliminar</button></div>
-		                        </div>`;
-		            }).join('');
+		    const container = document.getElementById('empresasLista');
+		    if (!empresas || empresas.length === 0) { container.innerHTML = '<p class="text-center p-3">No hay empresas para mostrar.</p>'; return; }
+		    container.innerHTML = empresas.map(e => `<div class="cliente-item"><div class="cliente-info"><h4>${e.razonSocial}</h4><p><strong>RUC:</strong> ${e.ruc}</p></div><div><button class="btn btn-info btn-sm" onclick="verPensionesDeEmpresa(${e.idEmpresa}, '${e.razonSocial.replace(/'/g, "\\'")}')">Pensiones</button><button class="btn btn-secondary btn-sm" onclick="editarEmpresa(${e.idEmpresa})">Editar</button><button class="btn btn-danger btn-sm" onclick="eliminarEmpresa(${e.idEmpresa}, '${e.razonSocial.replace(/'/g, "\\'")}')">Eliminar</button></div></div>`).join('');
 		}
-	    function mostrarPensiones(pensiones) {
-	        const container = document.getElementById('pensionesList');
-	        if (!pensiones || pensiones.length === 0) { container.innerHTML = '<p class="text-center p-3">No hay pensiones para mostrar.</p>'; return; }
-	        container.innerHTML = pensiones.map(p => {
-	            const clienteNombre = p.clienteNombre || 'N/A';
-	            const empresaNombre = p.empresaRazonSocial || 'N/A';
-	            return `<div class="cliente-item"><div class="cliente-info"><h4>Pensión de ${clienteNombre}</h4><p><strong>Empresa:</strong> ${empresaNombre}</p></div><div><button class="btn btn-secondary btn-sm" onclick="editarPension(${p.idPension})">Editar</button><button class="btn btn-danger btn-sm" onclick="eliminarPension(${p.idPension}, '${clienteNombre.replace(/'/g, "\\'")}')">Eliminar</button></div></div>`;
-	        }).join('');
-	    }
+		function mostrarPensiones(pensiones) {
+		    const container = document.getElementById('pensionesList');
+		    if (!pensiones || pensiones.length === 0) { container.innerHTML = '<p class="text-center p-3">No se encontraron pensiones.</p>'; return; }
+		    container.innerHTML = pensiones.map(p => {
+		        const clienteNombre = p.clienteNombre || 'N/A';
+		        const empresaNombre = p.empresaRazonSocial || 'N/A';
+		        const estado = obtenerEstadoPension(p.fechaInicio, p.fechaFin);
+		        return `<div class="cliente-item"><div class="cliente-info"><h4>Pensión de ${clienteNombre}</h4><p><strong>Empresa:</strong> ${empresaNombre}</p><p><strong>Estado:</strong> <span style="font-weight:bold; color:${estado.color}">${estado.texto}</span></p></div><div><button class="btn btn-secondary btn-sm" onclick="editarPension(${p.idPension})">Editar</button><button class="btn btn-danger btn-sm" onclick="eliminarPension(${p.idPension}, '${clienteNombre.replace(/'/g, "\\'")}')">Eliminar</button></div></div>`;
+		    }).join('');
+		}
 		async function verPensionesDeEmpresa(empresaId, nombreEmpresa) {
 		            const modalTitulo = document.getElementById('modalPensionesTitulo');
 		            const modalContenido = document.getElementById('modalPensionesContenido');
@@ -277,16 +276,16 @@
 		            }
 		}
 
-	    function renderizarPaginacion(containerId, pageData, callbackFunctionName) {
-	        const container = document.getElementById(containerId);
-	        container.innerHTML = '';
-	        if (pageData.totalPages <= 1) return;
-	        const { number: currentPage, totalPages, size } = pageData;
-	        const createLink = (page, text, disabled = false) => `<li class="page-item ${disabled ? 'disabled' : ''} ${page === currentPage ? 'active' : ''}"><a class="page-link" href="#" onclick="event.preventDefault(); window['${callbackFunctionName}'](${page}, ${size})">${text}</a></li>`;
-	        container.innerHTML += createLink(currentPage - 1, '&laquo;', currentPage === 0);
-	        for (let i = 0; i < totalPages; i++) { container.innerHTML += createLink(i, i + 1); }
-	        container.innerHTML += createLink(currentPage + 1, '&raquo;', currentPage >= totalPages - 1);
-	    }
+		function renderizarPaginacion(containerId, pageData, callbackFunctionName, termino = '') {
+		    const container = document.getElementById(containerId);
+		    container.innerHTML = '';
+		    if (pageData.totalPages <= 1) return;
+		    const { number: currentPage, totalPages, size } = pageData;
+		    const createLink = (page, text, disabled = false) => `<li class="page-item ${disabled ? 'disabled' : ''} ${page === currentPage ? 'active' : ''}"><a class="page-link" href="#" onclick="event.preventDefault(); window['${callbackFunctionName}'](${page}, ${size}, '${termino.replace(/'/g, "\\'")}')">${text}</a></li>`;
+		    container.innerHTML += createLink(currentPage - 1, '&laquo;', currentPage === 0);
+		    for (let i = 0; i < totalPages; i++) { container.innerHTML += createLink(i, i + 1); }
+		    container.innerHTML += createLink(currentPage + 1, '&raquo;', currentPage >= totalPages - 1);
+		}
 	    
 	    function toggleClienteFields() {
 	        const tipo = document.getElementById('tipoCliente').value;
@@ -451,13 +450,13 @@
 	    }
 	    
 		async function eliminarCliente(id, nombre) {
-		            if (!confirm(`¿Seguro que quieres eliminar a ${nombre}?`)) return;
-		            try {
-		                const response = await fetch(`/clientes/eliminar/${id}`, { method: 'DELETE' });
-		                if (!response.ok) throw new Error(await response.text());
-		                mostrarAlerta('Cliente eliminado', 'success', 1);
-		                cargarClientes();
-		            } catch (error) { mostrarAlerta('Error: ' + error.message, 'error', 1); }
+		    if (!confirm(`¿Seguro que quieres eliminar a ${nombre}?`)) return;
+		    try {
+		        const response = await fetch(`/clientes/eliminar/${id}`, { method: 'DELETE' });
+		        if (!response.ok) throw new Error(await response.text());
+		        mostrarAlerta('Cliente eliminado', 'success', 1);
+		        cargarClientes();
+		    } catch (error) { mostrarAlerta('Error: ' + error.message, 'error', 1); }
 		}
 		async function eliminarEmpresa(id, nombre) {
 		    if (!confirm(`¿Seguro que quieres eliminar a ${nombre}?`)) return;
@@ -488,6 +487,14 @@
 	    function limpiarFormularioCliente() { document.getElementById('clienteForm').reset(); toggleClienteFields(); }
 	    function limpiarFormularioEmpresa() { document.getElementById('empresaForm').reset(); }
 	    function limpiarFormularioPension() { document.getElementById('pensionForm').reset(); }
+		function obtenerEstadoPension(fechaInicio, fechaFin) {
+		    const hoy = new Date(); hoy.setHours(0,0,0,0);
+		    const inicio = new Date(fechaInicio + 'T00:00:00');
+		    const fin = new Date(fechaFin + 'T00:00:00');
+		    if (hoy < inicio) return { texto: 'Pendiente', color: '#ffc107' };
+		    if (hoy >= inicio && hoy <= fin) return { texto: 'Activa', color: '#28a745' };
+		    return { texto: 'Vencida', color: '#dc3545' };
+		}
 	</script>
 	</body>
 	</html>

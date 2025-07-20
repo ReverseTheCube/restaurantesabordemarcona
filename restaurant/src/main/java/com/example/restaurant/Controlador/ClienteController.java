@@ -104,9 +104,17 @@ public class ClienteController {
      */
     @GetMapping("/api/buscar/todos")
     @ResponseBody
-    public ResponseEntity<Page<Cliente>> obtenerTodosClientes(Pageable pageable) {
-        Page<Cliente> clientesPaginados = clienteRepository.findAll(pageable);
-        return ResponseEntity.ok(clientesPaginados);
+    public ResponseEntity<Page<Cliente>> obtenerTodosClientes(
+            @RequestParam(value = "termino", required = false, defaultValue = "") String termino, 
+            Pageable pageable) {
+
+        Page<Cliente> clientes;
+        if (termino != null && !termino.isEmpty()) {
+            clientes = clienteRepository.findByTermino(termino, pageable);
+        } else {
+            clientes = clienteRepository.findAll(pageable);
+        }
+        return ResponseEntity.ok(clientes);
     }
     
     /**

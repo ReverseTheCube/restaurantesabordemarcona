@@ -44,4 +44,7 @@ public interface EmpresaRepository extends JpaRepository<Empresa, Integer> {
            "WHERE e.ruc LIKE %:termino% " +
            "OR UPPER(e.razonSocial) LIKE UPPER(CONCAT('%', :termino, '%'))")
     List<Empresa> buscarPorRucOrRazonSocial(@Param("termino") String termino);
+    
+    @Query("SELECT e FROM Empresa e WHERE e.ruc LIKE %:termino% OR UPPER(e.razonSocial) LIKE UPPER(CONCAT('%', :termino, '%'))")
+    Page<Empresa> findByTermino(@Param("termino") String termino, Pageable pageable);
 }

@@ -40,21 +40,20 @@ public class PensionController {
      */
     @GetMapping("/api/listar")
     @ResponseBody
-    @Transactional(readOnly = true) // <-- Importante para acceder a datos lazy
-    public ResponseEntity<Page<PensionDTO>> listarPensiones(Pageable pageable) {
-        try {
-            Page<Pension> pensionesEntidad = pensionRepository.findAll(pageable);
+    @Transactional(readOnly = true)
+    public ResponseEntity<Page<PensionDTO>> listarPensiones(
+            @RequestParam(value = "termino", required = false, defaultValue = "") String termino, 
+            Pageable pageable) {
 
-            // Aquí está la magia: convertimos cada Pension a PensionDTO
-            Page<PensionDTO> pensionesDTO = pensionesEntidad.map(pension -> new PensionDTO(pension));
-
-            return ResponseEntity.ok(pensionesDTO);
-
-        } catch (Exception e) {
-            System.err.println("❌ [PENSION] Error al cargar pensiones paginadas: " + e.getMessage());
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        Page<Pension> pensionesEntidad;
+        if (termino != null && !termino.isEmpty()) {
+            pensionesEntidad = pensionRepository.findByNombreEmpresa(termino, pageable);
+        } else {
+            pensionesEntidad = pensionRepository.findAll(pageable);
         }
+
+        Page<PensionDTO> pensionesDTO = pensionesEntidad.map(PensionDTO::new);
+        return ResponseEntity.ok(pensionesDTO);
     }
     
     /**

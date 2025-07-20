@@ -74,8 +74,16 @@ public class EmpresaController {
      */
     @GetMapping("/api/listar")
     @ResponseBody
-    public ResponseEntity<Page<Empresa>> listarEmpresas(Pageable pageable) {
-        Page<Empresa> empresas = empresaRepository.findByActivoTrue(pageable);
+    public ResponseEntity<Page<Empresa>> listarEmpresas(
+            @RequestParam(value = "termino", required = false, defaultValue = "") String termino, 
+            Pageable pageable) {
+
+        Page<Empresa> empresas;
+        if (termino != null && !termino.isEmpty()) {
+            empresas = empresaRepository.findByTermino(termino, pageable);
+        } else {
+            empresas = empresaRepository.findByActivoTrue(pageable);
+        }
         return ResponseEntity.ok(empresas);
     }
     

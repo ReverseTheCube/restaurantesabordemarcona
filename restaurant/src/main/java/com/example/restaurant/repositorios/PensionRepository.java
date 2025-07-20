@@ -6,7 +6,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import com.example.restaurant.dto.PensionDTO;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -66,6 +67,8 @@ public interface PensionRepository extends JpaRepository<Pension, Integer> {
     List<Pension> findPensionesPorRangoFechas(@Param("fechaInicio") LocalDate fechaInicio, 
                                               @Param("fechaFin") LocalDate fechaFin);
     
+    @Query("SELECT p FROM Pension p WHERE UPPER(p.empresa.razonSocial) LIKE UPPER(CONCAT('%', :termino, '%'))")
+    Page<Pension> findByNombreEmpresa(@Param("termino") String termino, Pageable pageable);
     // Buscar pensiones por empresa y estado activo
     @Query("SELECT p FROM Pension p " +
            "WHERE p.empresa.idEmpresa = :empresaId " +
